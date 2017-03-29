@@ -1,0 +1,116 @@
+\documentclass{article}
+\title{Using GoNetwork}
+\author{Sara Linker}
+
+\usepackage{Sweave}
+\begin{document}
+\maketitle
+\SweaveOpts{concordance=TRUE}
+
+\section*{Introduction}
+  The purpose of GoNetwork is to create a functionally enriched gene network using GO terminology. Networks created using this program are easily plotted with molecular visualization software platforms such as Cytoscape.  The sample data used in this markdown is a list of homo sapien genes downloaded from the AmiGO 2 website associated with the following go terms: intracellular transport (GO:0046907), intracellular vesicle (GO:0097708), ATP binding (GO:0005524), postsynaptic density (GO:0014069), and negative regulation of transcription from polymerase II promoter (GO:0000122). \textit{Is it overkill to type out all of the GO terms and numbers?}
+
+
+<<Symbol Convert, echo=F>>=
+#gene.numbers <- read.csv("~/Downloads/GeneLists/adhd1.csv")
+#gene.numbers <- as.character(as.character(gene.numbers[2:dim(gene.numbers)[1],]#))
+#gene.numbers<- as.data.frame(gene.numbers)
+#gene.numbers=as.vector(gene.numbers)
+
+@
+
+\section*{Run}
+Use \textbf{getGo()} to create a matrix of GO terms based on your gene list.  GoNetwork improves upon previous functional gene enrichment tools by applying weights to the binary GO term matrix based on the number of parents in the GO hierarchy.
+<<getGo, echo=T>>=
+#load data:
+data(differentiation)
+head(genes)
+#line here demonstrating how to load the sample data
+#M <- getGo(genes,species = "human")
+@
+
+
+Once the GO term matrix is created, use \textbf{GoTheDist()} to calculate the distances between genes. \textbf{GoTheDist()} allows users to restrict the scope of GO terms based on minimum number of genes that fall under a GO term and minimum number of parents. Users may also choose whether the distances are calculated using the cosine function, manhattan distance or euclidean method: \textit{"cosine", "manhattan" or "euclidean"}.  In this case, the cosine function is used.
+
+\vspace{5mm}
+<<GoTheDist, echo=T>>=
+#D <- GoTheDist(M,method="cosine",Min=6,minparents=15)
+#quantile(D)
+@
+
+After distances have been calculated, convert the matrix to Cytoscape format using \textbf{cyto()}. Stringency can be adjusted by changing the lower and upper cutoff values. \textit{low.cutoff} is the minimum distance between two genes for the connection to be sent to cytoscape view, whereas \textit{high.cutoff} is the maximum distance.  \textit{Note: this may be confusing to users because low.cutoff is used for cosine and high.cutoff must be used for euclidean and manhattan.}
+
+<<cyto,echo=T>>=
+#tab<-cyto(D,method="cosine",low.cutoff=.5,high.cutoff=Inf)
+#head(tab)
+
+@
+
+
+
+Users can specify the cutoff values manually, or use \textbf{cutoff()} to calculate the cutoff values automatically.  This function locates the modes in the distribution of distance values and calculates the cutoff value that will provide optimal clustering. \textit{Sentence about stringency after figuring out with Sara}
+\vspace{2mm}
+<<cutoff,echo=T>>=
+#cut<-cutoff(M,method = "cosine",stringency=2.5,Min = 6,minparents = 15)
+#cut
+@
+
+
+Then write the resulting matrix to a .txt file.
+<<write.table,echo=T>>=
+#forcyto<-cyto(D,method="cosine",low.cutoff=cut,high.cutoff=Inf)
+#write.table(forcyto,row.names = F,file = "forcyto.txt",col.names = T,sep=",")
+@
+
+% \begin{figure}[!htb]
+% \centering
+% \includegraphics[width=6cm,height=6cm,angle=-90]{cosinehist.pdf}
+% \caption{Histogram of distance value distribution after cutoff was applied
+% \label{fig:filename1}}
+% \end{figure}
+% 
+% \begin{figure}[!htb]
+% \centering
+% \includegraphics[width=6cm,height=6cm,angle=-90]{test1.png}
+% \caption{Cluster Diagram Generated in Cytoscape
+% \label{fig:filename1}}
+% \end{figure}
+
+\newpage
+\subsection*{Other Functions Included}
+
+Use \textbf{symbolConvert()} to convert alternative gene notations to the desired format.  In this case, a list of entrezgene IDs are converted to their respective HGNC gene symbols.
+
+<<symbolconvert, echo=T>>=
+#head(gene.numbers)
+#gene.symbols<-symbolConvert(gene.numbers,"entrezgene","hgnc_symbol")
+#head(gene.symbols)
+@
+
+
+
+Use \textbf{exactTerms()} to identify GO terms containing a specified character string
+<<exactTerms, echo=T>>=
+#e<-exactTerms(colnames(M), term = "vesicle")
+#head(e)
+#Note: ask Sara if this is the correct use of the function
+@
+\vspace{4mm}
+Use \textbf{findGenes()} to return a list of genes with GO terms containing a specified character string.  We can use one of the terms found using the exactTerms() function above:
+<<findGenes, echo=T>>=
+
+#head(findGenes(M, term = "acrosomal.vesicle"))
+
+@
+\vspace{4mm}
+
+If you would like to identify the GO terms that a group of genes have in common, for instance, a list of genes taken from a cluster seen after plotting in cytoscape, use \textbf{findTerms()}:
+<<findTerms, echo=T>>=
+
+#findTerms(M, geneA = "APOE" ,geneB = "FNBP1L",geneC="TBC1D10A")
+@
+
+
+
+
+\end{document}

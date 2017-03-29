@@ -1,0 +1,21 @@
+\documentclass{article}
+\title{Using GoNetwork}
+\author{Sara Linker}
+
+\usepackage{Sweave}
+\begin{document}
+\maketitle
+\input{GoNetwork_overview_v2-concordance}
+
+\section*{Introduction}
+  The purpose of GoNetwork is to create a functionally enriched gene network using GO terminology. Networks created using this program are easily plotted with molecular visualization software platforms such as Cytoscape.  The sample data used in this markdown is a list of homo sapien genes downloaded from the AmiGO 2 website associated with the following go terms: intracellular transport (GO:0046907), intracellular vesicle (GO:0097708), ATP binding (GO:0005524), postsynaptic density (GO:0014069), and negative regulation of transcription from polymerase II promoter (GO:0000122). \textit{Is it overkill to type out all of the GO terms and numbers?}
+
+
+
+\section*{Run}
+Use \textbf{getGo()} to create a matrix of GO terms based on your gene list.  GoNetwork improves upon previous functional gene enrichment tools by applying weights to the binary GO term matrix based on the number of parents in the GO hierarchy.
+\begin{Schunk}
+\begin{Sinput}
+> #load data:
+> data(differentiation)
+> head(genes)

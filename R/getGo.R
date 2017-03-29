@@ -1,3 +1,16 @@
+#' Calculate the GO term matrix using hierarchical knowledge
+#'
+#' .
+#'
+#' @param genes genes to query GO terms for 
+#' @param species species to query from. Currently only supports human and mouse
+#' @param preMinCol default = 0
+#' @param preMinCol default = 0
+#' 
+#' @return Matrix of GO terms per gene
+#'
+#' @export
+
 getGo <- function(genes, species = "mouse", preMinCol = 0, preMinRow = 0){
   requireNamespace("biomaRt", quietly = TRUE)
   if(species == "human"){

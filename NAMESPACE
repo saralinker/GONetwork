@@ -2,7 +2,12 @@
 
 export(GoTheDist)
 export(InnerFun)
+export(OuterFun)
+export(cutoff)
 export(cyto)
 export(exactTerms)
 export(findGenes)
 export(findTerms)
+export(getGo)
+export(getGo_bin)
+export(symbolConvert)
