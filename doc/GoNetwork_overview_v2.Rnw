@@ -10,6 +10,9 @@
 \section*{Introduction}
   The purpose of GoNetwork is to create a functionally enriched gene network using GO terminology. Networks created using this program are easily plotted with molecular visualization software platforms such as Cytoscape.  The sample data used in this markdown is a list of homo sapien genes downloaded from the AmiGO 2 website associated with the following go terms: intracellular transport (GO:0046907), intracellular vesicle (GO:0097708), ATP binding (GO:0005524), postsynaptic density (GO:0014069), and negative regulation of transcription from polymerase II promoter (GO:0000122). \textit{Is it overkill to type out all of the GO terms and numbers?}
 
+<<Internal Functions, echo=FALSE>>=
+library(GONetwork)
+@
 
 <<Symbol Convert, echo=F>>=
 #gene.numbers <- read.csv("~/Downloads/GeneLists/adhd1.csv")
@@ -20,13 +23,17 @@
 @
 
 \section*{Run}
-Use \textbf{getGo()} to create a matrix of GO terms based on your gene list.  GoNetwork improves upon previous functional gene enrichment tools by applying weights to the binary GO term matrix based on the number of parents in the GO hierarchy.
-<<getGo, echo=T>>=
-#load data:
+GONetwork is designed to take a list of genes and calculate a similarity matrix based on the hierarchical representation of GO terms and taking into account the sparsity of the dataset. We've provided a test dataset to work with generated from real data examining neural progenitor cells throughout differentiation into neurons. The dataset \textsl{differentiation} contains an object \textsl{genes} with the significant genes from this analysis.
+
+<<Load Data, echo=T>>=
 data(differentiation)
 head(genes)
-#line here demonstrating how to load the sample data
-#M <- getGo(genes,species = "human")
+@
+
+\section*{Generate GOterm Matrix}
+Use \textbf{getGo()} to create a matrix of GO terms based on the gene list.  GoNetwork improves upon previous functional gene enrichment tools by applying weights to the binary GO term matrix based on the number of parents in the GO hierarchy. 
+<<getGo, echo=T>>=
+M <- getGo(genes,species = "human")
 @
 
 
