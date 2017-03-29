@@ -1,4 +1,5 @@
 getGo <- function(genes, species = "mouse", preMinCol = 0, preMinRow = 0){
+  requireNamespace("biomaRt", quietly = TRUE)
   if(species == "human"){
     ensembl <- useMart("ensembl",dataset="hsapiens_gene_ensembl")
   }else if (species == "mouse"){

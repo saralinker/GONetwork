@@ -13,7 +13,8 @@
 
 
 GoTheDist <- function(M,Min = 4,minparents = 8, MinRow = 0, Threads = NULL ,method = "cosine"){
-  require(parallel)
+  requireNamespace("parallel", quietly = TRUE)
+  requireNamespace("lsa", quietly = TRUE)
   M2 <- M[,(as.vector(apply(M,2,function(x) sum(x > 0))) > Min)]
   parent <- as.numeric(apply(X=M2,MARGIN=2,max))
   M2 <- M2[,parent >= minparents]
