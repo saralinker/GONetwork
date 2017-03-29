@@ -10,3 +10,8 @@ Description: GONetwork solves the problem of highly interconnected networks that
     such as those generated using GO Terms.
 License: NA
 RoxygenNote: 5.0.1
+LazyData: TRUE
+Imports:
+  reshape,
+  biomaRt,
+  lsa

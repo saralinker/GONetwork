@@ -10,7 +10,7 @@
 requireNamespace("reshape", quietly = TRUE)
 requireNamespace("biomaRt", quietly = TRUE)
 requireNamespace("lsa", quietly = TRUE)
-requireNamespace("GO.db", quietly = TRUE)
+#requireNamespace("GO.db", quietly = TRUE)
 #Initialize environment
 gonet.env <- new.env()
 # LOAD Homemade functions -------------------------------------------------
