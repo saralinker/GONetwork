@@ -7,11 +7,12 @@
 ##    - adding in important variables so you can color/size/etc... based on FC or p-value in cytoscape
 #############################################
 # LOAD Public functions --------------------------------------------------------
-library(reshape)
-library(biomaRt)
-library(lsa)
-library(GO.db)
-
+requireNamespace("reshape", quietly = TRUE)
+requireNamespace("biomaRt", quietly = TRUE)
+requireNamespace("lsa", quietly = TRUE)
+requireNamespace("GO.db", quietly = TRUE)
+#Initialize environment
+gonet.env <- new.env()
 # LOAD Homemade functions -------------------------------------------------
 getGo <- function(genes, species = "mouse", preMinCol = 0, preMinRow = 0){
   if(species == "human"){
