@@ -1,0 +1,9 @@
+Package: GONetwork
+Type: Package
+Title: Similarity matrix optimized for sparse hierarchical networks
+Version: 1.0
+Date: 2017-03-29
+Author: Sara B. Linker
+Maintainer: Sara B. Linker <slinker@salk.edu>
+Description: GONetwork solves the problem of highly interconnected networks that are generated when calculating dissimilarity over sparse hierarchical networks such as those generated using GO Terms. 
+License: NA
