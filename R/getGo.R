@@ -58,12 +58,6 @@ getGo <- function(genes, species = "mouse", preMinCol = 0, preMinRow = 0, maxthr
   ##########################
   terms <- data.frame(id = res$go_id , space = res$namespace_1003, name = res$name_1006)
   terms <- unique(terms[terms$id != "",])
-  
-
-  
-
-  
-
   #BP
   bp <- terms[terms$space == "biological_process",]
   bp$parents <- bpanc[as.character(bp$id),"bp"]
@@ -80,10 +74,9 @@ getGo <- function(genes, species = "mouse", preMinCol = 0, preMinRow = 0, maxthr
   ## Multiply each column by its respective number of parents
   #######################
   M2 <- M
-  for (i in 1:ncol(M)){
-    M2[,colnames(M)[i]] <- M[,colnames(M)[i]] * unlist(terms[terms$name == colnames(M)[i],"parents"])
-  }
-  M2[is.na(M2)] <- 0
+  parents <- terms[match(colnames(M), as.character(terms$name)),"parents"]
+  parents[is.na(parents)] <- 0
+  M2 <- t(t(M2) * parents)
   Col <- colSums(M2)
   Row <- rowSums(M2)
   M2 <- M2[as.vector(Row) > preMinRow ,as.vector(Col) > preMinCol]
