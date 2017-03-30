@@ -6,14 +6,28 @@
 #' @param species species to query from. Currently only supports human and mouse
 #' @param preMinCol default = 0
 #' @param preMinCol default = 0
+#' @param maxthreads default = 3
 #' 
 #' @return Matrix of GO terms per gene
 #'
 #' @export
 
-getGo <- function(genes, species = "mouse", preMinCol = 0, preMinRow = 0){
+
+
+getGo <- function(genes, species = "mouse", preMinCol = 0, preMinRow = 0, maxthreads = 3){
   require("biomaRt", quietly = TRUE)
-  require(GO.db, quietly = TRUE)
+  require("parallel", quietly = TRUE)
+  load(sysdata.rda)
+  internal.env <- new.env()
+  
+  devtools::use_data(
+    GO.db,
+    internal.env,
+    internal = TRUE,
+    overwrite = TRUE
+  )
+  
+  
   if(species == "human"){
     ensembl <- useMart("ensembl",dataset="hsapiens_gene_ensembl")
   }else if (species == "mouse"){
@@ -24,7 +38,7 @@ getGo <- function(genes, species = "mouse", preMinCol = 0, preMinRow = 0){
     
     filter <- c("external_gene_name") #TRY: listFilters(ensembl)
     attrib <- c("external_gene_name","name_1006","go_id","namespace_1003")
-    res = getBM(attributes=attrib,mart=ensembl)
+    res = getBM(attributes=attrib,filters=filter,values=genes,mart=ensembl)
   
   
   ##########################
@@ -32,31 +46,44 @@ getGo <- function(genes, species = "mouse", preMinCol = 0, preMinRow = 0){
   ##########################
   tab <- table(res$name_1006)
   tab <- tab[-(c(which(names(tab) == "")))]
-  M <- as.data.frame(matrix(data = 0,nrow=length(genes),ncol=length(tab)))
-  rownames(M) <- genes
-  colnames(M) <- ord <- names(tab)
+  ord <- names(tab)
   res <- res[res$name_1006 != "",]
   
-  M <- lapply(X = genes, FUN = FillM, ord = ord, res= res)
+  ####### 
+  # Fill in Matrix (binary step); parallel step
+  ####### 
+  cl <- makeCluster(getOption("cl.cores",  maxthreads))
+  clusterExport(cl=cl, varlist=c("genes","FillM","ord","res"))
+  tmp <- parLapply(cl, X = genes, fun = FillM, ord = ord, res= res)
+  M <- matrix(unlist(tmp),nrow = length(genes), ncol = length(ord))
+  rownames(M) <- genes
+  colnames(M) <- ord
+  stopCluster(cl)
+  
+  
   ##########################
-  ######## Create a table of term parents and children
+  ######## Create a table of term parents and children; not parallelized because the GO.db class is not subsettable
   ##########################
   terms <- data.frame(id = res$go_id , space = res$namespace_1003, name = res$name_1006)
   terms <- unique(terms[terms$id != "",])
+  
+
+  
+
+  
+
   #BP
   bp <- terms[terms$space == "biological_process",]
-  bp2 <- as.vector(lapply(as.character(bp$id),function(x) (length(GOBPANCESTOR[[x]]) )))
-  bp$parents <- bp2
+  bp$parents <- bpanc[as.character(bp$id),"bp"]
   #CC
   cc <- terms[terms$space == "cellular_component",]
-  cc2 <- as.vector(lapply(as.character(cc$id),function(x) (length(GOCCANCESTOR[[x]]) )))
-  cc$parents <- cc2
+  cc$parents <- ccanc[as.character(cc$id),"bp"]
   #MF
   mf <- terms[terms$space == "molecular_function",]
-  mf2 <- as.vector(lapply(as.character(mf$id),function(x) (length(GOMFANCESTOR[[x]]) )))
-  mf$parents <- mf2
+  mf$parents <- mfanc[as.character(mf$id),"bp"]
   
   terms <- as.data.frame(rbind(bp,cc,mf))
+
   #######################
   ## Multiply each column by its respective number of parents
   #######################

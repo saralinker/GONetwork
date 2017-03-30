@@ -2,15 +2,16 @@
 #'
 #' internal function required for getGo
 #'
-#' @param j row in M2
-#' @param x x-value in cosine
+#' @param g gene name
 #' 
-#' @return cosine(x,y)
+#' @return .
 #'
 #' @export
 
 
-FillM <- function(g){
-  x <- as.numeric(M2[i,])
-  tmp <- lapply(1:nrow(M2), InnerFun,x=x)
+FillM <- function(g,ord,res){
+  a <- rep(0,length(ord))
+  group <- match(unique(as.character(res[res$external_gene_name == g,"name_1006"])),ord)
+  a[group] <- 1
+  return(a)
 }
