@@ -14,6 +14,7 @@
 
 getGo_bin <- function(genes, species = "mouse", preMinCol = 0, preMinRow = 0){
   requireNamespace("biomaRt", quietly = TRUE)
+  require(GO.db, quietly = TRUE)
   if(species == "human"){
     ensembl <- useMart("ensembl",dataset="hsapiens_gene_ensembl")
   }else if (species == "mouse"){

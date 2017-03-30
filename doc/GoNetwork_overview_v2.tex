@@ -27,7 +27,7 @@ GONetwork is designed to take a list of genes and calculate a similarity matrix 
 \end{Schunk}
 
 \section*{Generate GOterm Matrix}
-Use \textbf{getGo()} to create a matrix of GO terms based on the gene list.  GoNetwork improves upon previous functional gene enrichment tools by applying weights to the binary GO term matrix based on the number of parents in the GO hierarchy. 
+Use \textbf{getGo()} to create a matrix of GO terms based on the gene list.  GoNetwork improves upon previous functional gene enrichment tools by applying weights to the binary GO term matrix based on the number of parents in the GO hierarchy. The time limitation is the connection to the GO term database.
 \begin{Schunk}
 \begin{Sinput}
 > M <- getGo(genes,species = "human")

@@ -13,16 +13,19 @@
 
 getGo <- function(genes, species = "mouse", preMinCol = 0, preMinRow = 0){
   require("biomaRt", quietly = TRUE)
+  require(GO.db, quietly = TRUE)
   if(species == "human"){
     ensembl <- useMart("ensembl",dataset="hsapiens_gene_ensembl")
   }else if (species == "mouse"){
     ensembl <- useMart("ensembl",dataset="mmusculus_gene_ensembl")
   }else{
-    warning("species not interpretable, try using human or mouse")
+    warning("species other than human and mouse are not yet supported")
   }
-  filter <- c("external_gene_name") #TRY: listFilters(ensembl)
-  attrib <- c("external_gene_name","name_1006","go_id","namespace_1003")
-  res = getBM(attributes=attrib,filters=filter,values=genes,mart=ensembl)
+    
+    filter <- c("external_gene_name") #TRY: listFilters(ensembl)
+    attrib <- c("external_gene_name","name_1006","go_id","namespace_1003")
+    res = getBM(attributes=attrib,mart=ensembl)
+  
   
   ##########################
   ######## Create a {0,1} table of term belongingness per gene
@@ -31,13 +34,10 @@ getGo <- function(genes, species = "mouse", preMinCol = 0, preMinRow = 0){
   tab <- tab[-(c(which(names(tab) == "")))]
   M <- as.data.frame(matrix(data = 0,nrow=length(genes),ncol=length(tab)))
   rownames(M) <- genes
-  colnames(M) <- names(tab)
+  colnames(M) <- ord <- names(tab)
   res <- res[res$name_1006 != "",]
-  for (g in genes){
-    group <- res[res$external_gene_name == g,"name_1006"]
-    #group <- group[-c(which(group == ""))]
-    M[g,group] <- 1
-  }
+  
+  M <- lapply(X = genes, FUN = FillM, ord = ord, res= res)
   ##########################
   ######## Create a table of term parents and children
   ##########################
