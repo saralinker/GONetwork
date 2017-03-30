@@ -1,5 +1,6 @@
 ancestorcount <- function(x, ancestor) {length(ancestor[[x]])}
 
+require(GO.db)
 
 
 xx <- as.list(GOBPANCESTOR)
