@@ -17,15 +17,7 @@
 getGo <- function(genes, species = "mouse", preMinCol = 0, preMinRow = 0, maxthreads = 3){
   require("biomaRt", quietly = TRUE)
   require("parallel", quietly = TRUE)
-  load(sysdata.rda)
-  internal.env <- new.env()
-  
-  devtools::use_data(
-    GO.db,
-    internal.env,
-    internal = TRUE,
-    overwrite = TRUE
-  )
+  load("R/sysdata.rda")
   
   
   if(species == "human"){
