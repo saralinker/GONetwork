@@ -18,26 +18,24 @@ getGo <- function(genes, species = "mouse", preMinCol = 0, preMinRow = 0, maxthr
   require("biomaRt", quietly = TRUE)
   require("parallel", quietly = TRUE)
   load("R/sysdata.rda")
+  source("R/FillM.R")
   
   
   if(species == "human"){
-    ensembl <- useMart("ensembl",dataset="hsapiens_gene_ensembl")
+    gaf <- human_gaf
   }else if (species == "mouse"){
-    ensembl <- useMart("ensembl",dataset="mmusculus_gene_ensembl")
+    gaf <- mouse_gaf
   }else{
     warning("species other than human and mouse are not yet supported")
   }
-    
-    filter <- c("external_gene_name") #TRY: listFilters(ensembl)
-    attrib <- c("external_gene_name","name_1006","go_id","namespace_1003")
-    res = getBM(attributes=attrib,filters=filter,values=genes,mart=ensembl)
   
-  
+  res <- na.exclude(human_gaf[matches(genes, as.character(human_gaf$V3))$y,c(3,5)])
+  colnames(res) <- c("external_gene_name","name_1006")
   ##########################
   ######## Create a {0,1} table of term belongingness per gene
   ##########################
   tab <- table(res$name_1006)
-  tab <- tab[-(c(which(names(tab) == "")))]
+  #tab <- tab[-(c(which(names(tab) == "")))]
   ord <- names(tab)
   res <- res[res$name_1006 != "",]
   
@@ -52,29 +50,11 @@ getGo <- function(genes, species = "mouse", preMinCol = 0, preMinRow = 0, maxthr
   colnames(M) <- ord
   stopCluster(cl)
   
-  
-  ##########################
-  ######## Create a table of term parents and children; not parallelized because the GO.db class is not subsettable
-  ##########################
-  terms <- data.frame(id = res$go_id , space = res$namespace_1003, name = res$name_1006)
-  terms <- unique(terms[terms$id != "",])
-  #BP
-  bp <- terms[terms$space == "biological_process",]
-  bp$parents <- bpanc[as.character(bp$id),"bp"]
-  #CC
-  cc <- terms[terms$space == "cellular_component",]
-  cc$parents <- ccanc[as.character(cc$id),"bp"]
-  #MF
-  mf <- terms[terms$space == "molecular_function",]
-  mf$parents <- mfanc[as.character(mf$id),"bp"]
-  
-  terms <- as.data.frame(rbind(bp,cc,mf))
-
   #######################
   ## Multiply each column by its respective number of parents
   #######################
   M2 <- M
-  parents <- terms[match(colnames(M), as.character(terms$name)),"parents"]
+  parents <- GO_space[match(colnames(M), as.character(GO_space$id)),"parents"]
   parents[is.na(parents)] <- 0
   M2 <- t(t(M2) * parents)
   Col <- colSums(M2)
