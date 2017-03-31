@@ -15,7 +15,6 @@
 
 
 getGo <- function(genes, species = "mouse", preMinCol = 0, preMinRow = 0, maxthreads = 3){
-  require("biomaRt", quietly = TRUE)
   require("parallel", quietly = TRUE)
   load("R/sysdata.rda")
   source("R/FillM.R")
@@ -45,7 +44,7 @@ getGo <- function(genes, species = "mouse", preMinCol = 0, preMinRow = 0, maxthr
   cl <- makeCluster(getOption("cl.cores",  maxthreads))
   clusterExport(cl=cl, varlist=c("genes","FillM","ord","res"))
   tmp <- parLapply(cl, X = genes, fun = FillM, ord = ord, res= res)
-  M <- matrix(unlist(tmp),nrow = length(genes), ncol = length(ord))
+  M <- t(matrix(unlist(tmp),ncol = length(genes), nrow = length(ord)))
   rownames(M) <- genes
   colnames(M) <- ord
   stopCluster(cl)
