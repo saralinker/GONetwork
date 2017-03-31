@@ -6,7 +6,7 @@
 #' @param species species to query from. Currently only supports human and mouse
 #' @param preMinCol default = 0
 #' @param preMinCol default = 0
-#' @param maxthreads default = 3
+#' @param maxthreads default = 4
 #' 
 #' @return Matrix of GO terms per gene
 #'
@@ -14,7 +14,7 @@
 
 
 
-getGo <- function(genes, species = "mouse", preMinCol = 0, preMinRow = 0, maxthreads = 3){
+getGo <- function(genes, species = "mouse", preMinCol = 0, preMinRow = 0, maxthreads = 4){
   require("parallel", quietly = TRUE)
   require("grr", quietly = TRUE)
   load("R/sysdata.rda")
@@ -43,7 +43,7 @@ getGo <- function(genes, species = "mouse", preMinCol = 0, preMinRow = 0, maxthr
   # Fill in Matrix (binary step); parallel step
   ####### 
   cl <- makeCluster(getOption("cl.cores",  maxthreads))
-  clusterExport(cl=cl, varlist=c("genes","FillM","ord","res"))
+  clusterExport(cl=cl, varlist=c("genes","FillM","ord","res"),envir = environment())
   tmp <- parLapply(cl, X = genes, fun = FillM, ord = ord, res= res)
   M <- t(matrix(unlist(tmp),ncol = length(genes), nrow = length(ord)))
   rownames(M) <- genes
@@ -60,6 +60,6 @@ getGo <- function(genes, species = "mouse", preMinCol = 0, preMinRow = 0, maxthr
   Col <- colSums(M2)
   Row <- rowSums(M2)
   M2 <- M2[as.vector(Row) > preMinRow ,as.vector(Col) > preMinCol]
-  
+  colnames(M2) <- GO_space[match(colnames(M2), as.character(GO_space$id)), "term"]
   return(M2)
 }
