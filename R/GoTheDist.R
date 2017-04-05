@@ -12,20 +12,20 @@
 #' @export
 
 
-GoTheDist <- function(M,Min = 4,minparents = 8, MinRow = 0, Threads = NULL ,method = "cosine"){
+GoTheDist <- function(M,Min = 4,minparents = 8, MinRow = 0, maxthreads = 3 ,method = "cosine"){
   require("parallel", quietly = TRUE)
   require("lsa", quietly = TRUE)
-  M2 <- M[,(as.vector(apply(M,2,function(x) sum(x > 0))) > Min)]
+  M2 <- M[,colSums(M) > Min]
   parent <- as.numeric(apply(X=M2,MARGIN=2,max))
   M2 <- M2[,parent >= minparents]
   M2 <- M2[rowSums(M2) > MinRow,]
   
-  if(!is.null(Threads) & method != "cosine"){
+  if(!is.null(maxthreads) & method != "cosine"){
     warning("Parallelization only currently available for cosine distances.")
   }
   
-  if (!is.null(Threads) & method == "cosine"){
-    cl <- makeCluster(getOption("cl.cores",  Threads))
+  if (!is.null(maxthreads) & method == "cosine"){
+    cl <- makeCluster(getOption("cl.cores",  maxthreads))
     clusterExport(cl=cl, varlist=c("M2","InnerFun","cosine"), envir = environment())
     tmp <- parLapply(cl, X = c(1:nrow(M2)),fun = OuterFun)
     #tmp <- lapply( X = c(1:nrow(M2)),FUN = OuterFun)

@@ -1,6 +1,10 @@
 # ancestorcount <- function(x, ancestor) {length(ancestor[[x]])}
+# getTerm <- function(g){
+  xx[[g]]@Term
+}
+
 # 
-# require(GO.db)
+ require(GO.db)
 # 
 # 
 # xx <- as.list(GOBPANCESTOR)
@@ -17,7 +21,9 @@
 # gos <- names(xx)
 # #mfancestors <- lapply(X = gos, FUN = ancestorcount, ancestor = GOMFANCESTOR)
 # mfanc <- data.frame(go = gos,  bp = unlist(mfancestors),row.names = gos)
-# 
+
+
+ 
 # GO_space <- data.frame(id = c(as.character(bpanc$go), as.character(ccanc$go), as.character(mfanc$go)), 
 #                        space = c(rep("biological_process", nrow(bpanc)),
 #                                      rep("cellular_component", nrow(ccanc)),
@@ -26,5 +32,8 @@
 #                        parents = c(bpanc$bp, ccanc$bp, mfanc$bp)
 # )
 
+ #xx <- as.list(GOTERM)
+ #GO_space$term <- unlist(lapply(X = GO_space$id,FUN = getTerm))
+ 
 #save(list = c("human_gaf","GO_space"), file = "~/Documents/R/packages/GONetwork/R/sysdata.rda",compress = TRUE)
 # 

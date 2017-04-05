@@ -10,8 +10,8 @@
 \section*{Introduction}
   The purpose of GoNetwork is to calculate networks based on GO annotation and to identify clusters that are differentially enriched between conditions based on expression data. Networks created using this program are easily plotted with molecular visualization software platforms such as Cytoscape. }
 
-\section*{Background}
-  Functional annotation is often used as a descriptive tool to examine gene sets identified through upstream analyses. This has been useful in describing what types of pathways and mechanisms are attributable to a given system, however there are limitations in both the ability to describe a system and to quantify these descriptions with many of the current functional annotation methods. GONetwork is a user-friendly method that increases the information returned from functional enrichment analyses by reducing the reliance on }
+# \section*{Background}
+#   Functional annotation is often used as a descriptive tool to examine gene sets identified through upstream analyses. This has been useful in describing what types of pathways and mechanisms are attributable to a given system, however there are limitations in both the ability to describe a system and to quantify these descriptions with many of the current functional annotation methods. GONetwork is a user-friendly method that increases the information returned from functional enrichment analyses by reducing the reliance on }
 <<Internal Functions, echo=FALSE>>=
 library(GONetwork)
 @
