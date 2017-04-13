@@ -17,7 +17,7 @@ cyto <- function(D,cutoff = 0.5, remove.dups = FALSE){
   tmp2 <- tmp[tmp$value > cutoff & tmp$value !=1,]
   tmp2$value <- 1 - tmp2$value
   colnames(tmp2) <- c("origin","destination","distance")
-  if(remove.dups = TRUE){
+  if(remove.dups == TRUE){
     tmp2$dup <-  0
     for(i in 1:nrow(tmp2)){
       a <- as.character(tmp2[i,1])
