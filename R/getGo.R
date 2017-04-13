@@ -17,7 +17,7 @@
 getGo <- function(genes, species = "mouse", preMinCol = 0, preMinRow = 0, maxthreads = 4){
   require("parallel", quietly = TRUE)
   require("grr", quietly = TRUE)
-  #load("R/sysdata.rda")
+  load("R/sysdata.rda")
   source("R/FillM.R")
   
   
