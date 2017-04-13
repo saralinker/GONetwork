@@ -14,7 +14,9 @@ findTerms <- function(M,genes = NULL, proportion.shared = 1){
   terms <- M[genes,]
   if(length(genes) > 1){
     terms[terms > 0] <- 1
-    terms <- colnames(terms[,(colSums(terms) / length(genes)) >= proportion.shared])
+    a <- (colSums(terms) / length(genes)) >= proportion.shared
+      terms <- colnames(terms)[a]
+    
   }else{
     terms <- names(terms[terms > 0])
   }
