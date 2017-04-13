@@ -11,7 +11,7 @@
 #' @export
 #' 
 
-AssignCluster <- function(tab, cutoff = 0.1, return_in_cytotable = TRUE){
+AssignCluster <- function(tab, cutoff = 0.1, return_in_cytotable = FALSE){
   cutoff <- 1 - cutoff
   tab$origin <- as.character(tab$origin)
   tab$destination <- as.character(tab$destination)

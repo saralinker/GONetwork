@@ -28,6 +28,7 @@ testClusters <- function(k.out, group){
     }
     k.test$padj <- p.adjust(k.test$fisher.p)
   }
+  return(k.test)
 }
 
 
