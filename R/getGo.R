@@ -17,7 +17,7 @@
 getGo <- function(genes, species = "mouse", preMinCol = 0, preMinRow = 0, maxthreads = 4){
   require("parallel", quietly = TRUE)
   require("grr", quietly = TRUE)
-  load("R/sysdata.rda")
+  #load("R/sysdata.rda")
   source("R/FillM.R")
   
   
@@ -28,8 +28,13 @@ getGo <- function(genes, species = "mouse", preMinCol = 0, preMinRow = 0, maxthr
   }else{
     warning("species other than human and mouse are not yet supported")
   }
-  
+  if(species == "human"){
   res <- na.exclude(human_gaf[matches(genes, as.character(human_gaf$V3))$y,c(3,5)])
+  }else if (species == "mouse"){
+    res <- na.exclude(mouse_gaf[matches(genes, as.character(mouse_gaf$V3))$y,c(3,5)])
+  }else{
+    warning("error: species not yet supported")
+  }
   colnames(res) <- c("external_gene_name","name_1006")
   ##########################
   ######## Create a {0,1} table of term belongingness per gene
