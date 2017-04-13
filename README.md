@@ -6,6 +6,8 @@ To install dependencies:
 ```r
 source("https://bioconductor.org/biocLite.R")
 biocLite("GO.db")
+
+install.packages("grr")
 ```
 
 To install GONetwork in R:
