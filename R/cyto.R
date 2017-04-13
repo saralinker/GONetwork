@@ -11,7 +11,7 @@
 
 
 cyto <- function(D,cutoff = 0.5){
-  requireNamespace("reshape", quietly = TRUE)
+  require("reshape", quietly = TRUE)
   tmp <- melt(t(D))
   tmp2 <- tmp[tmp$value > cutoff & tmp$value !=1,]
   tmp2$value <- 1 - tmp2$value
