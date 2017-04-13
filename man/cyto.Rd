@@ -4,12 +4,14 @@
 \alias{cyto}
 \title{Convert distance matrix to a cytoscape formatted table}
 \usage{
-cyto(D, cutoff = 0.5)
+cyto(D, cutoff = 0.5, remove.dups = FALSE)
 }
 \arguments{
 \item{D}{matrix of gene distances based on GO terms}
 
 \item{cutoff, }{minimum distance between nodes}
+
+\item{remove.dups, }{default = FALSE This will remove self-loops. This is an advantage for visulazing in cytoscape. If you continue on to calling groups make sure this is set to FALSE because cytoscape will only color nodes that are in the origin column, thereby missing the remaining nodes.}
 }
 \value{
 matrix in a cytoscape-friendly format

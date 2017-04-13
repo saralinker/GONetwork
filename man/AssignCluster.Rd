@@ -7,7 +7,11 @@
 AssignCluster(tab, cutoff = 0.5, return_in_cytotable = TRUE)
 }
 \arguments{
-\item{g}{gene name}
+\item{tab, }{output from cyto()}
+
+\item{cutoff, }{the minimum distance between nodes to be considered a cluster}
+
+\item{return_in_cytotable, }{returns the group numbers automatically into the original table provided from cyto(). Alternatively, you can set this to FALSE and simply return the group for each gene.}
 }
 \value{
 .
