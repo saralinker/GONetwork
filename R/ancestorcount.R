@@ -1,10 +1,10 @@
 # ancestorcount <- function(x, ancestor) {length(ancestor[[x]])}
 # getTerm <- function(g){
-  xx[[g]]@Term
-}
+#  xx[[g]]@Term
+#}
 
 # 
- require(GO.db)
+# require(GO.db)
 # 
 # 
 # xx <- as.list(GOBPANCESTOR)
