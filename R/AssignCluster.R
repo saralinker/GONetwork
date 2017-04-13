@@ -2,7 +2,9 @@
 #'
 #' assign clusters for each gene based on GO distance. By default, it incorporates this "group" into the cytoscape file
 #'
-#' @param g gene name
+#' @param tab, output from cyto()
+#' @param cutoff, the minimum distance between nodes to be considered a cluster
+#' @param return_in_cytotable, returns the group numbers automatically into the original table provided from cyto(). Alternatively, you can set this to FALSE and simply return the group for each gene.
 #' 
 #' @return .
 #'
