@@ -17,4 +17,3 @@ vector of exact terms that match the given term (ie: grep)
 \description{
 Akin to grep for the GO term annotations
 }
-

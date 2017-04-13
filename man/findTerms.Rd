@@ -19,4 +19,3 @@ vector of GO terms
 \description{
 Returns a vector of GO terms associated with a group of genes
 }
-

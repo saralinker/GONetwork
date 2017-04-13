@@ -4,7 +4,7 @@
 \alias{GoTheDist}
 \title{Calculate the distance matrix between genes based on GO annotation}
 \usage{
-GoTheDist(M, Min = 4, minparents = 8, MinRow = 0, Threads = NULL,
+GoTheDist(M, Min = 4, minparents = 8, MinRow = 0, maxthreads = 3,
   method = "cosine")
 }
 \arguments{
@@ -22,4 +22,3 @@ matrix in a cytoscape-friendly format
 \description{
 .
 }
-

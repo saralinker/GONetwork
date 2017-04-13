@@ -17,4 +17,3 @@ cosine(x,y)
 \description{
 .
 }
-

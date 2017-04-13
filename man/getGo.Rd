@@ -4,7 +4,8 @@
 \alias{getGo}
 \title{Calculate the GO term matrix using hierarchical knowledge}
 \usage{
-getGo(genes, species = "mouse", preMinCol = 0, preMinRow = 0)
+getGo(genes, species = "mouse", preMinCol = 0, preMinRow = 0,
+  maxthreads = 4)
 }
 \arguments{
 \item{genes}{genes to query GO terms for}
@@ -12,6 +13,8 @@ getGo(genes, species = "mouse", preMinCol = 0, preMinRow = 0)
 \item{species}{species to query from. Currently only supports human and mouse}
 
 \item{preMinCol}{default = 0}
+
+\item{maxthreads}{default = 4}
 
 \item{preMinCol}{default = 0}
 }
@@ -21,4 +24,3 @@ Matrix of GO terms per gene
 \description{
 .
 }
-

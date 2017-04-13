@@ -17,4 +17,3 @@ matrix in a cytoscape-friendly format
 \description{
 .
 }
-

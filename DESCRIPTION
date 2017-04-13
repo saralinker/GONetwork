@@ -9,7 +9,7 @@ Description: GONetwork solves the problem of highly interconnected networks that
     are generated when calculating dissimilarity over sparse hierarchical networks
     such as those generated using GO Terms.
 License: NA
-RoxygenNote: 5.0.1
+RoxygenNote: 6.0.1
 LazyData: TRUE
 Imports:
   reshape,

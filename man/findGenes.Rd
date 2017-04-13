@@ -17,4 +17,3 @@ vector of gene names
 \description{
 Returns a vector of genes associated with a given GO term
 }
-

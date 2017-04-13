@@ -21,4 +21,3 @@ Matrix of GO terms per gene
 \description{
 .
 }
-

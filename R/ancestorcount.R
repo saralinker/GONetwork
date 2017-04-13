@@ -35,5 +35,5 @@
  #xx <- as.list(GOTERM)
  #GO_space$term <- unlist(lapply(X = GO_space$id,FUN = getTerm))
  
-#save(list = c("human_gaf","GO_space"), file = "~/Documents/R/packages/GONetwork/R/sysdata.rda",compress = TRUE)
+#save(list = c("mouse_gaf","human_gaf","GO_space"), file = "~/Documents/R/packages/GONetwork/R/sysdata.rda",compress = TRUE)
 # 
