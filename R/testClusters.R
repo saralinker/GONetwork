@@ -15,7 +15,7 @@ testClusters <- function(k.out, group){
   if(length(a) > 2){
     warning("testClusters currently only supports a comparison of 2 groups")
   }else{
-    for(i in unique(k.out$k)){
+    for(i in unique(na.exclude(k.out$k))){
       k_genes <- as.character(k.out[k.out$k == i,"genes"])
       k_direction <- table((group[match(k_genes, as.character(group[,1])),2]))
       df <- data.frame(exp = as.numeric(a), ob = as.numeric(k_direction),row.names = names(a))
