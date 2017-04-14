@@ -8,10 +8,10 @@
 \SweaveOpts{concordance=TRUE}
 
 \section*{Introduction}
-  The purpose of GoNetwork is to calculate networks based on GO annotation and to identify clusters that are differentially enriched between conditions based on expression data. Networks created using this program are easily plotted with molecular visualization software platforms such as Cytoscape. }
+  The purpose of GoNetwork is to calculate networks based on GO annotation and to identify clusters that are differentially enriched between conditions based on expression data. Networks created using this program are easily plotted with molecular visualization software platforms such as Cytoscape. 
 
-# \section*{Background}
-#   Functional annotation is often used as a descriptive tool to examine gene sets identified through upstream analyses. This has been useful in describing what types of pathways and mechanisms are attributable to a given system, however there are limitations in both the ability to describe a system and to quantify these descriptions with many of the current functional annotation methods. GONetwork is a user-friendly method that increases the information returned from functional enrichment analyses by reducing the reliance on }
+ \section*{Background}
+   Functional annotation is often used as a descriptive tool to examine gene sets identified through upstream analyses. This has been useful in describing what types of pathways and mechanisms are attributable to a given system, however there are limitations in both the ability to describe a system and to quantify these descriptions with many of the current functional annotation methods. GONetwork is a user-friendly method that increases the information returned from functional enrichment analyses by reducing the reliance on 
 <<Internal Functions, echo=FALSE>>=
 library(GONetwork)
 @
@@ -43,33 +43,35 @@ Once the GO term matrix is created, use \textbf{GoTheDist()} to calculate the di
 
 \vspace{5mm}
 <<GoTheDist, echo=T>>=
-#D <- GoTheDist(M,method="cosine",Min=6,minparents=15)
+D <- GoTheDist(M,method="cosine",Min=6,minparents=15)
 #quantile(D)
 @
 
 After distances have been calculated, convert the matrix to Cytoscape format using \textbf{cyto()}. Stringency can be adjusted by changing the lower and upper cutoff values. \textit{low.cutoff} is the minimum distance between two genes for the connection to be sent to cytoscape view, whereas \textit{high.cutoff} is the maximum distance.  \textit{Note: this may be confusing to users because low.cutoff is used for cosine and high.cutoff must be used for euclidean and manhattan.}
 
 <<cyto,echo=T>>=
-#tab<-cyto(D,method="cosine",low.cutoff=.5,high.cutoff=Inf)
-#head(tab)
+tab<-cyto(D,cutoff = 0.2)
+head(tab)
+tab2 <-AssignCluster(tab,cutoff = 0.4,return_in_cytotable = TRUE)
+head(tab2)
+@
 
+With the results from \textbf{cyto()} you can continue directly to plotting in cytoscape. To continue on a calculate differential representation of gene groups within GO term clusters you can continue on by first assigning clusters with \textbf{AssignCluster()}.}
+
+<<AssignCluster,echo=T>>=
+k <-AssignCluster(tab,cutoff = 0.4)
+table(k$k)
+@
+
+You can then calcualte the significance of those results with \textbf{testClusters()}. Test clusters requires an additional variable \textit{group}. \textit{group} is a matrix where the first column contains all of the gene names from \texit{genes} and the second column contains the group designation to be tested}
+
+<<testClusters,echo=T>>=
+head(group)
+k.chi.test <- testClusters(k,group)
+findTerms(M,as.character(k[k$k == 14 & !is.na(k$k),"genes"]),proportion.shared = 0.4)
 @
 
 
-
-Users can specify the cutoff values manually, or use \textbf{cutoff()} to calculate the cutoff values automatically.  This function locates the modes in the distribution of distance values and calculates the cutoff value that will provide optimal clustering. \textit{Sentence about stringency after figuring out with Sara}
-\vspace{2mm}
-<<cutoff,echo=T>>=
-#cut<-cutoff(M,method = "cosine",stringency=2.5,Min = 6,minparents = 15)
-#cut
-@
-
-
-Then write the resulting matrix to a .txt file.
-<<write.table,echo=T>>=
-#forcyto<-cyto(D,method="cosine",low.cutoff=cut,high.cutoff=Inf)
-#write.table(forcyto,row.names = F,file = "forcyto.txt",col.names = T,sep=",")
-@
 
 % \begin{figure}[!htb]
 % \centering

@@ -8,10 +8,10 @@
 \input{GoNetwork-concordance}
 
 \section*{Introduction}
-  The purpose of GoNetwork is to calculate networks based on GO annotation and to identify clusters that are differentially enriched between conditions based on expression data. Networks created using this program are easily plotted with molecular visualization software platforms such as Cytoscape. }
+  The purpose of GoNetwork is to calculate networks based on GO annotation and to identify clusters that are differentially enriched between conditions based on expression data. Networks created using this program are easily plotted with molecular visualization software platforms such as Cytoscape. 
 
-# \section*{Background}
-#   Functional annotation is often used as a descriptive tool to examine gene sets identified through upstream analyses. This has been useful in describing what types of pathways and mechanisms are attributable to a given system, however there are limitations in both the ability to describe a system and to quantify these descriptions with many of the current functional annotation methods. GONetwork is a user-friendly method that increases the information returned from functional enrichment analyses by reducing the reliance on }
+ \section*{Background}
+   Functional annotation is often used as a descriptive tool to examine gene sets identified through upstream analyses. This has been useful in describing what types of pathways and mechanisms are attributable to a given system, however there are limitations in both the ability to describe a system and to quantify these descriptions with many of the current functional annotation methods. GONetwork is a user-friendly method that increases the information returned from functional enrichment analyses by reducing the reliance on 
 
 
 \section*{Run}
@@ -33,3 +33,13 @@ Use \textbf{getGo()} to create a matrix of GO terms based on the gene list.  GoN
 \begin{Schunk}
 \begin{Sinput}
 > M <- getGo(genes,species = "human")
+\end{Sinput}
+\end{Schunk}
+
+
+Once the GO term matrix is created, use \textbf{GoTheDist()} to calculate the distances between genes. \textbf{GoTheDist()} allows users to restrict the scope of GO terms based on minimum number of genes that fall under a GO term and minimum number of parents. Users may also choose whether the distances are calculated using the cosine function, manhattan distance or euclidean method: \textit{"cosine", "manhattan" or "euclidean"}.  In this case, the cosine function is used.
+
+\vspace{5mm}
+\begin{Schunk}
+\begin{Sinput}
+> D <- GoTheDist(M,method="cosine",Min=6,minparents=15)
