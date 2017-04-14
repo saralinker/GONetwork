@@ -10,24 +10,26 @@
 #' @export
 
 testClusters <- function(k.out, group){
+  op <- options(warn = (-1))
   k.test <- data.frame()
-  a <- table(group[,2]) 
-  if(length(a) > 2){
-    warning("testClusters currently only supports a comparison of 2 groups")
-  }else{
-    for(i in unique(na.exclude(k.out$k))){
-      k_genes <- as.character(k.out[k.out$k == i,"genes"])
-      k_direction <- table((group[match(k_genes, as.character(group[,1])),2]))
-      df <- data.frame(exp = as.numeric(a), ob = as.numeric(k_direction),row.names = names(a))
-      t <- fisher.test(df)
-      k.test[i,"k"] <- i
-      k.test[i,names(a)[1]] <- as.numeric(k_direction[1])
-      k.test[i,names(a)[2]] <- as.numeric(k_direction[2])
-      k.test[i,"fisher.oddsratio"] <- as.numeric(t$estimate)
-      k.test[i,"fisher.p"] <- as.numeric(t$p.value)
+  a <- table(group[, 2])
+  group[,2] <- as.factor(group[,2])
+  
+  for (i in unique(na.exclude(k.out$k))) {
+    k_genes <- as.character(k.out[k.out$k == i, "genes"])
+    k_direction <- table((group[match(k_genes, as.character(group[,1])), 2]))
+    df <- data.frame(exp = as.numeric(a), ob = as.numeric(k_direction), 
+                     row.names = names(a))
+    t <- chisq.test(df)
+    k.test[i, "k"] <- i
+    for(n in 1:length(names(a))){
+      k.test[i, names(a)[n]] <- as.numeric(k_direction[n])
     }
-    k.test$padj <- p.adjust(k.test$fisher.p)
+    k.test[i, "chi_statistic"] <- as.numeric(t$statistic)
+    k.test[i, "chi_p"] <- as.numeric(t$p.value)
   }
+  k.test$padj <- p.adjust(k.test$chi_p)
+  options(op)
   return(k.test)
 }
 
