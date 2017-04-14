@@ -4,7 +4,7 @@
 \alias{AssignCluster}
 \title{AssignCluster}
 \usage{
-AssignCluster(tab, cutoff = 0.5, return_in_cytotable = TRUE)
+AssignCluster(tab, cutoff = 0.1, return_in_cytotable = FALSE)
 }
 \arguments{
 \item{tab, }{output from cyto()}
