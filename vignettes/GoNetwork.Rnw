@@ -29,13 +29,13 @@ GONetwork is designed to take a list of genes and calculate a similarity matrix 
 
 <<Load Data, echo=T>>=
 data(differentiation)
-head(genes)
+head(differentiation)
 @
 
 \section*{Generate GOterm Matrix}
 Use \textbf{getGo()} to create a matrix of GO terms based on the gene list.  GoNetwork improves upon previous functional gene enrichment tools by applying weights to the binary GO term matrix based on the number of parents in the GO hierarchy. The time limitation is the connection to the GO term database.
 <<getGo, echo=T>>=
-M <- getGo(genes,species = "human")
+M <- getGo(differentiation,species = "human")
 @
 
 
@@ -63,9 +63,10 @@ k <-AssignCluster(tab,cutoff = 0.4)
 table(k$k)
 @
 
-You can then calcualte the significance of those results with \textbf{testClusters()}. Test clusters requires an additional variable \textbf{group}. \textbf{group} is a matrix where the first column contains all of the gene names from \textbf{genes} and the second column contains the group designation to be tested
+You can then calcualte the significance of those results with \textbf{testClusters()}. Test clusters requires an additional variable \textbf{group}. \textbf{group} is a matrix where the first column contains all of the gene names from \textbf{differentiation} and the second column contains the group designation to be tested
 
 <<testClusters,echo=T>>=
+data(group)
 head(group)
 k.chi.test <- testClusters(k,group)
 findTerms(M,as.character(k[k$k == 14 & !is.na(k$k),"genes"]),proportion.shared = 0.4)
