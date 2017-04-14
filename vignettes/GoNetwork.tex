@@ -23,8 +23,8 @@ GONetwork is designed to take a list of genes and calculate a similarity matrix 
 > head(genes)
 \end{Sinput}
 \begin{Soutput}
-[1] "GTF3C2-AS1" "PRMT5-AS1"  "CIDEB"      "CTRL"       "NUCB1-AS1" 
-[6] "CERS6-AS1" 
+[1] "GTF3C2-AS1" "PRMT5-AS1"  "FANCD2OS"   "MED4-AS1"   "LRRC37A16P"
+[6] "PKD2L2"    
 \end{Soutput}
 \end{Schunk}
 
@@ -43,3 +43,143 @@ Once the GO term matrix is created, use \textbf{GoTheDist()} to calculate the di
 \begin{Schunk}
 \begin{Sinput}
 > D <- GoTheDist(M,method="cosine",Min=6,minparents=15)
+> #quantile(D)
+\end{Sinput}
+\end{Schunk}
+
+After distances have been calculated, convert the matrix to Cytoscape format using \textbf{cyto()}. Stringency can be adjusted by changing the lower and upper cutoff values. \textit{low.cutoff} is the minimum distance between two genes for the connection to be sent to cytoscape view, whereas \textit{high.cutoff} is the maximum distance.  \textit{Note: this may be confusing to users because low.cutoff is used for cosine and high.cutoff must be used for euclidean and manhattan.}
+
+\begin{Schunk}
+\begin{Sinput}
+> tab<-cyto(D,cutoff = 0.2)
+> head(tab)
+\end{Sinput}
+\begin{Soutput}
+       origin destination  distance
+6     SLC24A5      PKD2L2 0.6259316
+91      ASIC1      PKD2L2 0.7453083
+756  SLC25A35      SLC3A1 0.5873734
+808  SLC22A17      SLC3A1 0.7525478
+1166   PKD2L2     SLC24A5 0.6259316
+1411    CIITA        SLA2 0.6693514
+\end{Soutput}
+\begin{Sinput}
+> tab2 <-AssignCluster(tab,cutoff = 0.4,return_in_cytotable = TRUE)
+> head(tab2)
+\end{Sinput}
+\begin{Soutput}
+       origin destination  distance group
+6     SLC24A5      PKD2L2 0.6259316    NA
+91      ASIC1      PKD2L2 0.7453083    NA
+756  SLC25A35      SLC3A1 0.5873734     4
+808  SLC22A17      SLC3A1 0.7525478     4
+1166   PKD2L2     SLC24A5 0.6259316    NA
+1411    CIITA        SLA2 0.6693514     1
+\end{Soutput}
+\end{Schunk}
+
+With the results from \textbf{cyto()} you can continue directly to plotting in cytoscape. To continue on a calculate differential representation of gene groups within GO term clusters you can continue on by first assigning clusters with \textbf{AssignCluster()}.
+
+\begin{Schunk}
+\begin{Sinput}
+> k <-AssignCluster(tab,cutoff = 0.4)
+> table(k$k)
+\end{Sinput}
+\begin{Soutput}
+ 1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 
+16 10  3  2  2  2  2  9 13  2 11  3  2  7  2  2  2  2  2  2 
+\end{Soutput}
+\end{Schunk}
+
+You can then calcualte the significance of those results with \textbf{testClusters()}. Test clusters requires an additional variable \textbf{group}. \textbf{group} is a matrix where the first column contains all of the gene names from \textbf{genes} and the second column contains the group designation to be tested
+
+\begin{Schunk}
+\begin{Sinput}
+> head(group)
+\end{Sinput}
+\begin{Soutput}
+       genes group
+1 GTF3C2-AS1  high
+2  PRMT5-AS1  high
+3   FANCD2OS  high
+4   MED4-AS1  high
+5 LRRC37A16P  high
+6     PKD2L2  high
+\end{Soutput}
+\begin{Sinput}
+> k.chi.test <- testClusters(k,group)
+> findTerms(M,as.character(k[k$k == 14 & !is.na(k$k),"genes"]),proportion.shared = 0.4)
+\end{Sinput}
+\begin{Soutput}
+[1] "Rho guanyl-nucleotide exchange factor activity"         
+[2] "GTPase activator activity"                              
+[3] "protein binding"                                        
+[4] "cytosol"                                                
+[5] "Rho protein signal transduction"                        
+[6] "regulation of Rho protein signal transduction"          
+[7] "positive regulation of GTPase activity"                 
+[8] "regulation of small GTPase mediated signal transduction"
+\end{Soutput}
+\end{Schunk}
+
+
+
+% \begin{figure}[!htb]
+% \centering
+% \includegraphics[width=6cm,height=6cm,angle=-90]{cosinehist.pdf}
+% \caption{Histogram of distance value distribution after cutoff was applied
+% \label{fig:filename1}}
+% \end{figure}
+% 
+% \begin{figure}[!htb]
+% \centering
+% \includegraphics[width=6cm,height=6cm,angle=-90]{test1.png}
+% \caption{Cluster Diagram Generated in Cytoscape
+% \label{fig:filename1}}
+% \end{figure}
+
+\newpage
+\subsection*{Other Functions Included}
+
+Use \textbf{symbolConvert()} to convert alternative gene notations to the desired format.  In this case, a list of entrezgene IDs are converted to their respective HGNC gene symbols.
+
+\begin{Schunk}
+\begin{Sinput}
+> #head(gene.numbers)
+> #gene.symbols<-symbolConvert(gene.numbers,"entrezgene","hgnc_symbol")
+> #head(gene.symbols)
+\end{Sinput}
+\end{Schunk}
+
+
+
+Use \textbf{exactTerms()} to identify GO terms containing a specified character string
+\begin{Schunk}
+\begin{Sinput}
+> #e<-exactTerms(colnames(M), term = "vesicle")
+> #head(e)
+\end{Sinput}
+\end{Schunk}
+\vspace{4mm}
+Use \textbf{findGenes()} to return a list of genes with GO terms containing a specified character string.  We can use one of the terms found using the exactTerms() function above:
+\begin{Schunk}
+\begin{Sinput}
+> 
+> #head(findGenes(M, term = "acrosomal.vesicle"))
+> 
+\end{Sinput}
+\end{Schunk}
+\vspace{4mm}
+
+If you would like to identify the GO terms that a group of genes have in common, for instance, a list of genes taken from a cluster seen after plotting in cytoscape, use \textbf{findTerms()}:
+\begin{Schunk}
+\begin{Sinput}
+> 
+> #findTerms(M, geneA = "APOE" ,geneB = "FNBP1L",geneC="TBC1D10A")
+\end{Sinput}
+\end{Schunk}
+
+
+
+
+\end{document}
