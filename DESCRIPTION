@@ -15,4 +15,6 @@ Imports:
   reshape,
   biomaRt,
   lsa,
-  GO.db
+  grr
+Remotes:
+  bioc::3.5/Go.db
