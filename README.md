@@ -2,13 +2,12 @@
 
 The purpose of GoNetwork is to calculate networks based on GO annotation and to identify clusters that are differentially enriched between conditions based on expression data. Networks created using this program are easily plotted with molecular visualization software platforms such as Cytoscape. 
 
-To install dependencies:
-```r
-source("https://bioconductor.org/biocLite.R")
-biocLite("GO.db")
-
-install.packages("grr")
-```
+#To install dependencies:
+#```r
+#source("https://bioconductor.org/biocLite.R")
+#biocLite("GO.db")
+#install.packages("grr")
+#```
 
 To install GONetwork in R:
 ```r
