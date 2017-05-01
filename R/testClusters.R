@@ -26,10 +26,10 @@ testClusters <- function(k.out, group){
     for(n in 1:length(names(a))){
       k.test[i, names(a)[n]] <- as.numeric(k_direction[n])
     }
-    k.test[i, "chi_statistic"] <- as.numeric(t$statistic)
-    k.test[i, "chi_p"] <- as.numeric(t$p.value)
+    k.test[i, "odds_ratio"] <- as.numeric(t$estimate)
+    k.test[i, "fisher_p"] <- as.numeric(t$p.value)
   }
-  k.test$padj <- p.adjust(k.test$chi_p)
+  k.test$padj <- p.adjust(k.test$fisher_p)
   options(op)
   return(k.test)
 }
