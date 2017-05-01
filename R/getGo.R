@@ -3,7 +3,7 @@
 #' .
 #'
 #' @param genes genes to query GO terms for 
-#' @param species species to query from. Currently only supports human and mouse
+#' @param species species to query from. Currently supports "human" and "mouse"
 #' @param preMinCol default = 0
 #' @param preMinCol default = 0
 #' @param maxthreads default = 4

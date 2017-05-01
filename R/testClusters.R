@@ -16,11 +16,12 @@ testClusters <- function(k.out, group){
   group[,2] <- as.factor(group[,2])
   
   for (i in unique(na.exclude(k.out$k))) {
-    k_genes <- as.character(k.out[k.out$k == i, "genes"])
+    k_genes <- as.character(na.exclude(k.out[k.out$k == i, "genes"]))
     k_direction <- table((group[match(k_genes, as.character(group[,1])), 2]))
-    df <- data.frame(exp = as.numeric(a), ob = as.numeric(k_direction), 
+    propdif <- length(k_genes) / sum(a)
+    df <- data.frame(exp = as.numeric(a) , ob = as.numeric(k_direction), 
                      row.names = names(a))
-    t <- chisq.test(df)
+    t <- fisher.test(df)
     k.test[i, "k"] <- i
     for(n in 1:length(names(a))){
       k.test[i, names(a)[n]] <- as.numeric(k_direction[n])
