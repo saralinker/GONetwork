@@ -16,5 +16,3 @@ Imports:
   biomaRt,
   lsa,
   grr
-Remotes:
-  bioc::3.5/Go.db
