@@ -16,5 +16,5 @@ Imports:
   reshape,
   biomaRt,
   lsa,
-  grr
+  grr,
   GO.db
