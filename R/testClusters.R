@@ -27,7 +27,7 @@ testClusters <- function(k.out, group){
       k.test[i, names(a)[n]] <- as.numeric(k_direction[n])
     }
     k.test[i, "odds_ratio"] <- as.numeric(t$estimate)
-    k.test[i, "fisher_p"] <- as.numeric(t$p.value)
+    k.test[i, "fishers_p"] <- as.numeric(t$p.value)
   }
   k.test$padj <- p.adjust(k.test$fisher_p)
   options(op)
