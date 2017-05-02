@@ -2,16 +2,17 @@
 #'
 #' .
 #'
-#' @param D matrix of gene distances based on GO terms
+#' @param D, matrix of gene distances based on GO terms
 #' @param cutoff, minimum distance between nodes
 #' @param remove.dups, default = FALSE This will remove self-loops. This is an advantage for visulazing in cytoscape. If you continue on to calling groups make sure this is set to FALSE because cytoscape will only color nodes that are in the origin column, thereby missing the remaining nodes.
+#' 
 #' 
 #' @return matrix in a cytoscape-friendly format
 #'
 #' @export
 
 
-cyto <- function(D,cutoff = 0.5, remove.dups = FALSE){
+cyto <- function(D,  cutoff = 0.5, remove.dups = FALSE){
   require("reshape", quietly = TRUE)
   tmp <- melt(t(D))
   tmp2 <- tmp[tmp$value > cutoff & tmp$value !=1,]
@@ -30,5 +31,6 @@ cyto <- function(D,cutoff = 0.5, remove.dups = FALSE){
     }
     tmp2 <- tmp2[tmp2$dup == "original",c(1:3)]
   }
+  
   return(tmp2)
 }
