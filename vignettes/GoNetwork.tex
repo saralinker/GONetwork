@@ -155,4 +155,82 @@ You can then calculate differential functional enrichment between conditions usi
 \textbf{findGenes} returns genes in your dataset exactly associated with a given functional term.
 \begin{Schunk}
 \begin{Sinput}
-> findGenes(M,tab, group = 21, term = "neuropeptide signaling pathway")
+> findGenes(M,tab, group = 21, term = "postsynaptic membrane")
+\end{Sinput}
+\begin{Soutput}
+ [1] "GRIN2D" "GRIA3"  "GRIK4"  "GLRB"   "GABRG2" "GRIK1"  "SSPN"   "GLRA2" 
+ [9] "GRIA2"  "GABRB1" "GABRA3" "GABRG3" "GLRA3"  "GABRA2"
+\end{Soutput}
+\end{Schunk}
+
+Alternatively, you can use \textbf{findGenes} to return genes in any GO term. Here we are looking for which genes, and associated clusters, contain genes involved in the cell cycle.
+\begin{Schunk}
+\begin{Sinput}
+> fg <- findGenes(M,tab, term = "cell cycle")
+> head(fg)
+\end{Sinput}
+\begin{Soutput}
+    gene group
+1  SPDYA     4
+2   GPS2     2
+3 TRIM71    11
+4   DBF4    12
+5 KIF20B     6
+6  PRR11     0
+\end{Soutput}
+\end{Schunk}
+
+We can then trace back which are the top clusters that have this term. Since cell cycle is a common term with only 5 ancestors it appears across many genes including the group 0, which are unclustered genes, as well as groups 4, and 11.
+\begin{Schunk}
+\begin{Sinput}
+> fg.table <- data.frame(table(fg$group))
+> fg.table <- fg.table[order(fg.table$Freq,decreasing = TRUE),]
+\end{Sinput}
+\end{Schunk}
+
+Let's take a look at what the top functional categories are in groups 4 and 11, which contain genes involved in the cell cycle
+\begin{Schunk}
+\begin{Sinput}
+> #Group 4
+> term_genes <- unique(as.character(tab[as.character(tab$group) == 4, "origin"]))
+> head(term_genes)
+\end{Sinput}
+\begin{Soutput}
+[1] "CDC6"   "POLQ"   "TICRR"  "POLE2"  "POLE"   "CDC25A"
+\end{Soutput}
+\begin{Sinput}
+> findTerms(M, term_genes,proportion.shared = 0.3)
+\end{Sinput}
+\begin{Soutput}
+[1] "protein binding" "nucleus"         "nucleoplasm"     "cytoplasm"      
+[5] "cytosol"        
+\end{Soutput}
+\begin{Sinput}
+> findTerms(M, term_genes,proportion.shared = 0.6)
+\end{Sinput}
+\begin{Soutput}
+[1] "protein binding" "nucleoplasm"    
+\end{Soutput}
+\begin{Sinput}
+> #Group 11
+> term_genes <- unique(as.character(tab[as.character(tab$group) == 11, "origin"]))
+> head(term_genes)
+\end{Sinput}
+\begin{Soutput}
+[1] "IGF2BP1" "IGF2BP3" "CDCA3"   "SPC24"   "KLHL1"   "CDKL2"  
+\end{Soutput}
+\begin{Sinput}
+> findTerms(M, term_genes,proportion.shared = 0.3)
+\end{Sinput}
+\begin{Soutput}
+[1] "protein binding" "nucleus"         "nucleoplasm"     "cytoplasm"      
+[5] "cytosol"         "cell division"  
+\end{Soutput}
+\begin{Sinput}
+> findTerms(M, term_genes,proportion.shared = 0.6)
+\end{Sinput}
+\begin{Soutput}
+[1] "protein binding" "cytosol"        
+\end{Soutput}
+\end{Schunk}
+\end{document}

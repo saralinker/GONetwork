@@ -96,6 +96,34 @@ findTerms(M, term_genes,proportion.shared = 0.6)
 \subsection*{Examine genes associated with each annotation}
 \textbf{findGenes} returns genes in your dataset exactly associated with a given functional term.
 <<findGenes,echo=T>>=
-findGenes(M,tab, group = 21, term = "neuropeptide signaling pathway")
+findGenes(M,tab, group = 21, term = "postsynaptic membrane")
+@
+
+Alternatively, you can use \textbf{findGenes} to return genes in any GO term. Here we are looking for which genes, and associated clusters, contain genes involved in the cell cycle.
+<<findGenes,echo=T>>=
+fg <- findGenes(M,tab, term = "cell cycle")
+head(fg)
+@
+
+We can then trace back which are the top clusters that have this term. Since cell cycle is a common term with only 5 ancestors it appears across many genes including the group 0, which are unclustered genes, as well as groups 4, and 11.
+<<findGenes table,echo=T>>=
+fg.table <- data.frame(table(fg$group))
+fg.table <- fg.table[order(fg.table$Freq,decreasing = TRUE),]
+head(fg.table)
+@
+
+Let's take a look at what the top functional categories are in groups 4 and 11, which contain genes involved in the cell cycle
+<<findTerms2,echo=T>>=
+#Group 4
+term_genes <- unique(as.character(tab[as.character(tab$group) == 4, "origin"]))
+head(term_genes)
+findTerms(M, term_genes,proportion.shared = 0.3)
+findTerms(M, term_genes,proportion.shared = 0.6)
+
+#Group 11
+term_genes <- unique(as.character(tab[as.character(tab$group) == 11, "origin"]))
+head(term_genes)
+findTerms(M, term_genes,proportion.shared = 0.3)
+findTerms(M, term_genes,proportion.shared = 0.6)
 @
 \end{document}
