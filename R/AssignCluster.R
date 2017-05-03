@@ -18,15 +18,14 @@ AssignCluster <- function(tab,D, K = 10, rmv_stragglers = TRUE){
   if(rmv_stragglers == TRUE){
     D2 <- D[g,g]
     k <-cutree(hclust(dist(D2)),k = K) 
+    tmp <- melt(t(D2))
+    tmp$value <- 1 - tmp$value
+    colnames(tmp) <- c("origin","destination","distance")
+    tab <- tmp
   }else{
-    D2 <- D
+    k <-cutree(hclust(dist(D)),k = K) 
   }
-  #
-  tmp <- melt(t(D2))
-  tmp2 <- tmp[tmp$value > cutoff & tmp$value !=1,]
-  tmp2$value <- 1 - tmp2$value
-  colnames(tmp2) <- c("origin","destination","distance")
-  tmp2$group <- as.numeric(k[match(as.character(tmp2$origin), names(k))])
-  return(tmp2)
+  tab$group <- as.numeric(k[match(as.character(tab$origin), as.vector(names(k)))])
+  return(tab)
 }
 

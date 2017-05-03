@@ -61,4 +61,4 @@ Once the GO term matrix is created, use \textbf{GoTheDist()} to calculate the di
 \textbf{AssignCluster()} will determine gene clusters given a user defined k. Here we've turned on the additional option to remove stragglers (rmv_stragglers). This recalculates gene clusters after removing genes that are not clearly defined with GO annotation.
 \begin{Schunk}
 \begin{Sinput}
-> tab <-AssignCluster(tab, D, K = 10,rmv_stragglers = TRUE)
+> tab <-AssignCluster(tab = tab, D = D, K = 10, rmv_stragglers = TRUE)
