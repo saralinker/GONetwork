@@ -54,6 +54,7 @@ testClusters <- function(tab, group){
   k.test$padj <- p.adjust(k.test$prop_test_p)
   k.test <- k.test[order(k.test$prop_test_p),]
   k.test$group <- factor(k.test$group, k.test$group[1:nrow(k.test)])
+  rownames(k.test) <- c(1:nrow(k.test))
   options(warn = 0)
   return(k.test)
 }
