@@ -60,7 +60,7 @@ Once the GO term matrix is created, use \textbf{GoTheDist()} to calculate the di
 \end{Sinput}
 \end{Schunk}
 \begin{figure}[ht]
-\includegraphics[width=8cm]{distance_clustering_all.png}
+\includegraphics[width=12cm]{distance_clustering_all.png}
 \centering
 \caption{Cytoscape plot of all genes labelled by gene cluster}
 \end{figure}
@@ -74,13 +74,19 @@ Once the GO term matrix is created, use \textbf{GoTheDist()} to calculate the di
 \end{Sinput}
 \end{Schunk}
 \begin{figure}[ht]
-\includegraphics[width=8cm]{distance_clustering.png}
+\includegraphics[width=12cm]{distance_clustering.png}
 \centering
 \caption{Cytoscape plot after refinement}
 \end{figure}
 
 \subsection*{Differential functional enrichment}
 You can then calculate differential functional enrichment between conditions using \textbf{testClusters()}. Test clusters requires an additional variable \textbf{group} which identifies which condition each gene is related to. \textbf{group} is a data.frame where the first column contains all of the gene names from \textbf{differentiation} and the second column contains the group designation to be tested ("up-regulated" or "down-regulated").
+
+\begin{figure}[ht]
+\includegraphics[width=8cm]{group_clustering.png}
+\centering
+\caption{Genes grouped by clustering and colored by differential expression estimate. All clusters represent genes that are enriched for specific functional annotation. Note the interconnectedness wihtin a group as well as between groups. The between groups represents gene clusters with similar annotation. Highlighted clusters contain more genes from a given condition. For example, cluster 22 primarily contains genes that are more highly expressed in neurons. Below we will examine what genes and terms are present within these clusters. }
+\end{figure}
 
 \begin{Schunk}
 \begin{Sinput}
@@ -91,49 +97,62 @@ You can then calculate differential functional enrichment between conditions usi
 \begin{Soutput}
   group obs.high obs.low  exp.high   exp.low odds_ratio  prop_test_p
 1    21        1      21 12.651354  9.348646  23.130878 1.513407e-06
-2     4       61      13 42.554553 31.445447  17.808875 2.442414e-05
+2     4       53      11 36.803938 27.196062  15.752921 7.217642e-05
 3    22        1       8  5.175554  3.824446   6.142748 1.319521e-02
 4    14        0       6  3.450369  2.549631   5.936919 1.482692e-02
 5    12       10       0  5.750615  4.249385   5.752805 1.646235e-02
 6    18       10       0  5.750615  4.249385   5.752805 1.646235e-02
-7     6       30       9 22.427400 16.572600   5.248718 2.196294e-02
-8    26        8       0  4.600492  3.399508   4.300493 3.810133e-02
-9    11       24       7 17.826907 13.173093   4.248520 3.928454e-02
+7    26        8       0  4.600492  3.399508   4.300493 3.810133e-02
+8    11       24       7 17.826907 13.173093   4.248520 3.928454e-02
           padj
 1 4.540221e-05
-2 7.083000e-04
+2 2.093116e-03
 3 3.694659e-01
 4 4.003268e-01
 5 4.280211e-01
 6 4.280211e-01
-7 5.271106e-01
-8 8.763307e-01
-9 8.763307e-01
+7 9.144320e-01
+8 9.144320e-01
 \end{Soutput}
 \end{Schunk}
-\begin{figure}[ht]
-\includegraphics[width=8cm]{group_clustering.png}
-\centering
-\caption{Genes grouped by clustering and colored by differential expression estimate. All clusters represent genes that are enriched for specific functional annotation. Note the interconnectedness wihtin a group as well as between groups. The between groups represents gene clusters with similar annotation. Highlighted clusters contain more genes from a given condition. For example, cluster 22 primarily contains genes that are more highly expressed in neurons. Below we will examine what genes and terms are present within these clusters. }
-\end{figure}
+
 
 \subsection*{Examine annotation associated with each group}
 \textbf{findTerms} returns a list of GO terms shared within each gene group. Here, we've required that at least 40 percent of the genes share the annotation term.
 \begin{Schunk}
 \begin{Sinput}
-> term_genes <- unique(as.character(tab[tab$group == 22, "destination"]))
-> term_genes[1:10]
+> term_genes <- unique(as.character(tab[as.character(tab$group) == 21, "origin"]))
+> head(term_genes)
 \end{Sinput}
 \begin{Soutput}
- [1] "SLC3A1"   "SLA2"     "CIITA"    "SPDYA"    "ARHGEF38" "ACSM3"   
- [7] "MCMDC2"   "FOXH1"    "HMHA1"    "GPS2"    
+[1] "GRIA2"  "GRIN2A" "GRIK4"  "GRIK1"  "GRIA3"  "SSPN"  
 \end{Soutput}
 \begin{Sinput}
 > findTerms(M, term_genes,proportion.shared = 0.3)
 \end{Sinput}
 \begin{Soutput}
-[1] "protein binding" "nucleus"         "nucleoplasm"     "cytosol"        
+ [1] "protein binding"                      
+ [2] "plasma membrane"                      
+ [3] "integral component of plasma membrane"
+ [4] "transport"                            
+ [5] "neuropeptide signaling pathway"       
+ [6] "synaptic transmission"                
+ [7] "cell junction"                        
+ [8] "ion transmembrane transport"          
+ [9] "postsynaptic membrane"                
+[10] "excitatory postsynaptic potential"    
+[11] "chloride transmembrane transport"     
+\end{Soutput}
+\begin{Sinput}
+> findTerms(M, term_genes,proportion.shared = 0.6)
+\end{Sinput}
+\begin{Soutput}
+[1] "plasma membrane"       "cell junction"         "postsynaptic membrane"
 \end{Soutput}
 \end{Schunk}
 
-\end{document}
+\subsection*{Examine genes associated with each annotation}
+\textbf{findGenes} returns genes in your dataset exactly associated with a given functional term.
+\begin{Schunk}
+\begin{Sinput}
+> findGenes(M,tab, group = 21, term = "neuropeptide signaling pathway")

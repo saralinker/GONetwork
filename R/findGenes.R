@@ -10,13 +10,19 @@
 #' @export
 
 
-findGenes <- function(M,term = "nuclear"){
+findGenes <- function(M,tab, group = NULL, term = "nuclear"){
   tmp <- M[,grep(term,colnames(M),ignore.case=TRUE)]
   if(!is.null(dim(tmp))){
     tmp2 <- tmp[rowSums(tmp) > 0,]
-    return(rownames(tmp2))
-    
+    df <- data.frame(gene = rownames(tmp2),group = rep(0, times = nrow(tmp2)))
   }else{
-    return(rownames(M[tmp > 0,]))
+    df <- data.frame(gene = rownames(M[tmp > 0,]), group = rep(0, length(rownames(M[tmp > 0,]))))
   }
+  for (g in as.character(unique(tab$origin))){
+    df[df$gene == g,"group" ] <- unique(as.character(tab[tab$origin == g, "group"]))
+  }
+  if (!is.null(group)){
+    df <- as.character(df[df$group == group,]$gene)
+  }
+  return(df)
 }

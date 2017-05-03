@@ -51,7 +51,7 @@ D <- GoTheDist(M,method="cosine",minparents=15)
 tab<-cyto(D,cutoff = 0.3)
 @
 \begin{figure}[ht]
-\includegraphics[width=8cm]{distance_clustering_all.png}
+\includegraphics[width=12cm]{distance_clustering_all.png}
 \centering
 \caption{Cytoscape plot of all genes labelled by gene cluster}
 \end{figure}
@@ -63,7 +63,7 @@ tab<-cyto(D,cutoff = 0.3)
 tab <-AssignCluster(tab = tab, D = D, K = 30, rmv_stragglers = TRUE)
 @
 \begin{figure}[ht]
-\includegraphics[width=8cm]{distance_clustering.png}
+\includegraphics[width=12cm]{distance_clustering.png}
 \centering
 \caption{Cytoscape plot after refinement}
 \end{figure}
@@ -71,23 +71,31 @@ tab <-AssignCluster(tab = tab, D = D, K = 30, rmv_stragglers = TRUE)
 \subsection*{Differential functional enrichment}
 You can then calculate differential functional enrichment between conditions using \textbf{testClusters()}. Test clusters requires an additional variable \textbf{group} which identifies which condition each gene is related to. \textbf{group} is a data.frame where the first column contains all of the gene names from \textbf{differentiation} and the second column contains the group designation to be tested ("up-regulated" or "down-regulated").
 
-<<testClusters,echo=T>>=
-data(group)
-k.test <- testClusters(tab,group)
-k.test[k.test$prop_test_p < 0.05,]
-@
 \begin{figure}[ht]
 \includegraphics[width=8cm]{group_clustering.png}
 \centering
 \caption{Genes grouped by clustering and colored by differential expression estimate. All clusters represent genes that are enriched for specific functional annotation. Note the interconnectedness wihtin a group as well as between groups. The between groups represents gene clusters with similar annotation. Highlighted clusters contain more genes from a given condition. For example, cluster 22 primarily contains genes that are more highly expressed in neurons. Below we will examine what genes and terms are present within these clusters. }
 \end{figure}
 
+<<testClusters,echo=T>>=
+data(group)
+k.test <- testClusters(tab,group)
+k.test[k.test$prop_test_p < 0.05,]
+@
+
+
 \subsection*{Examine annotation associated with each group}
 \textbf{findTerms} returns a list of GO terms shared within each gene group. Here, we've required that at least 40 percent of the genes share the annotation term.
 <<findTerms,echo=T>>=
-term_genes <- unique(as.character(tab[tab$group == 22, "destination"]))
-term_genes[1:10]
+term_genes <- unique(as.character(tab[as.character(tab$group) == 21, "origin"]))
+head(term_genes)
 findTerms(M, term_genes,proportion.shared = 0.3)
+findTerms(M, term_genes,proportion.shared = 0.6)
 @
 
+\subsection*{Examine genes associated with each annotation}
+\textbf{findGenes} returns genes in your dataset exactly associated with a given functional term.
+<<findGenes,echo=T>>=
+findGenes(M,tab, group = 21, term = "neuropeptide signaling pathway")
+@
 \end{document}
