@@ -1,6 +1,6 @@
 \documentclass{article}
-\title{Using GoNetwork}
-\author{Sara Linker}
+\title{GONetwork}
+\author{Sara B. Linker, Sarah Voter, Fred H Gage}
 
 \usepackage{Sweave}
 \begin{document}
@@ -34,39 +34,41 @@ M <- getGo(differentiation,species = "human")
 @
 
 
-Once the GO term matrix is created, use \textbf{GoTheDist()} to calculate the distances between genes. Here, we're using the cosine distance to calculate similarity. It is useful to restrict the analysis to highly informative GO terms. Here we've required that all of the GO terms have at least 15 ancestors. 
+Once the GO term matrix is created, use \textbf{GoTheDist()} to calculate the distances between genes. Here, we're using the cosine distance to calculate similarity. It is useful to restrict the analysis to highly informative GO terms. Here we've required that all of the GO terms have at least 11 ancestors. 
 \vspace{5mm}
 
 <<GoTheDist, echo=T>>=
-D <- GoTheDist(M,method="cosine",minparents=15)
+D <- GoTheDist(M,method="cosine",minparents=11)
 @
 
 \section*{Plot the full network}
-\textbf{cyto()} will convert the matrix to Cytoscape format. The overall connectivity of the network can be adjusted by changing the cutoff values. Here, we exclude genes with a similarity score of less that 0.2.}
-
+\textbf{cyto()} will convert the matrix to Cytoscape format. The overall connectivity of the network can be adjusted by changing the cutoff values. Here, we exclude genes with a similarity score of less that 0.2.
+\vspace{5mm}
 <<cyto,echo=T>>=
-tab<-cyto(D,cutoff = 0.2)
+tab<-cyto(D,cutoff = 0.3)
 @
 
 \section*{Identify gene clusters}
-\textbf{AssignCluster()} will determine gene clusters given a user defined k. Here we've turned on the additional option to remove stragglers (rmv_stragglers). This recalculates gene clusters after removing genes that are not clearly defined with GO annotation.
+\textbf{AssignCluster()} will determine gene clusters given a user defined k. Here we've turned on the additional option to remove stragglers. This recalculates gene clusters after removing genes that are not clearly defined with GO annotation.
+\vspace{5mm}
 <<AssignCluster,echo=T>>=
-tab <-AssignCluster(tab = tab, D = D, K = 10, rmv_stragglers = TRUE)
+tab <-AssignCluster(tab = tab, D = D, K = 20, rmv_stragglers = TRUE)
 @
 
 \section*{Differential functional enrichment}
 You can then calculate differential functional enrichment between conditions using \textbf{testClusters()}. Test clusters requires an additional variable \textbf{group} which identifies which condition each gene is related to. \textbf{group} is a data.frame where the first column contains all of the gene names from \textbf{differentiation} and the second column contains the group designation to be tested ("up-regulated" or "down-regulated").
 
 <<testClusters,echo=T>>=
+data(group)
 k.test <- testClusters(tab,group)
-k.test
+k.test[k.test$prop_test_p < 0.05,]
 @
 
 \section*{Examine annotation associated with each group}
 \textbf{findTerms} returns a list of GO terms shared within each gene group. Here, we've required that at least 40 percent of the genes share the annotation term.
 <<findTerms,echo=T>>=
-term_genes <- unique(as.character(tab[tab$group == 6, "destination"]))
-findTerms(M, term_genes,proportion.shared = 0.2)
+term_genes <- unique(as.character(tab[tab$group == 10, "destination"]))
+findTerms(M, term_genes,proportion.shared = 0.5)
 @
 
 \end{document}

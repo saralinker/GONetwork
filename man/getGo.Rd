@@ -10,7 +10,7 @@ getGo(genes, species = "mouse", preMinCol = 0, preMinRow = 0,
 \arguments{
 \item{genes}{genes to query GO terms for}
 
-\item{species}{species to query from. Currently only supports human and mouse}
+\item{species}{species to query from. Currently supports "human" and "mouse"}
 
 \item{preMinCol}{default = 0}
 

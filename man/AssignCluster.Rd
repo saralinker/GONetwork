@@ -4,12 +4,14 @@
 \alias{AssignCluster}
 \title{AssignCluster}
 \usage{
-AssignCluster(tab, cutoff = 0.1, return_in_cytotable = FALSE)
+AssignCluster(tab, D, K = 10, rmv_stragglers = TRUE)
 }
 \arguments{
 \item{tab, }{output from cyto()}
 
-\item{cutoff, }{the minimum distance between nodes to be considered a cluster}
+\item{K, }{number of groups to subset genes into}
+
+\item{rmv_stragglers, }{run a second round of clustering after removing the unclustered genes default = TRUE}
 
 \item{return_in_cytotable, }{returns the group numbers automatically into the original table provided from cyto(). Alternatively, you can set this to FALSE and simply return the group for each gene.}
 }

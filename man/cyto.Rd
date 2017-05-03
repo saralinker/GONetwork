@@ -7,7 +7,7 @@
 cyto(D, cutoff = 0.5, remove.dups = FALSE)
 }
 \arguments{
-\item{D}{matrix of gene distances based on GO terms}
+\item{D, }{matrix of gene distances based on GO terms}
 
 \item{cutoff, }{minimum distance between nodes}
 
