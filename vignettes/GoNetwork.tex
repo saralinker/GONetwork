@@ -1,4 +1,7 @@
 \documentclass{article}
+\usepackage{graphicx}
+\usepackage[letterpaper, portrait, margin=1in]{geometry}
+\graphicspath{ {/Users/saralinker/Documents/SalkProjects/ME/GONetwork/GN_fig/} }
 \title{GONetwork}
 \author{Sara B. Linker, Sarah Voter, Fred H Gage}
 
@@ -30,7 +33,7 @@ GONetwork is designed to take a list of genes and calculate a similarity matrix 
 \end{Soutput}
 \end{Schunk}
 
-\section*{Generate GOterm Matrix}
+\subsection*{Generate GOterm Matrix}
 Use \textbf{getGo()} to create the matrix of GO terms based on the gene list.
 \begin{Schunk}
 \begin{Sinput}
@@ -48,7 +51,7 @@ Once the GO term matrix is created, use \textbf{GoTheDist()} to calculate the di
 \end{Sinput}
 \end{Schunk}
 
-\section*{Plot the full network}
+\subsection*{Plot the full network}
 \textbf{cyto()} will convert the matrix to Cytoscape format. The overall connectivity of the network can be adjusted by changing the cutoff values. Here, we exclude genes with a similarity score of less that 0.2.
 \vspace{5mm}
 \begin{Schunk}
@@ -56,17 +59,27 @@ Once the GO term matrix is created, use \textbf{GoTheDist()} to calculate the di
 > tab<-cyto(D,cutoff = 0.3)
 \end{Sinput}
 \end{Schunk}
+\begin{figure}[ht]
+\includegraphics[width=8cm]{distance_clustering_all.png}
+\centering
+\caption{Cytoscape plot of all genes labelled by gene cluster}
+\end{figure}
 
-\section*{Identify gene clusters}
+\subsection*{Identify gene clusters}
 \textbf{AssignCluster()} will determine gene clusters given a user defined k. Here we've turned on the additional option to remove stragglers. This recalculates gene clusters after removing genes that are not clearly defined with GO annotation.
 \vspace{5mm}
 \begin{Schunk}
 \begin{Sinput}
-> tab <-AssignCluster(tab = tab, D = D, K = 20, rmv_stragglers = TRUE)
+> tab <-AssignCluster(tab = tab, D = D, K = 10, rmv_stragglers = TRUE)
 \end{Sinput}
 \end{Schunk}
+\begin{figure}[ht]
+\includegraphics[width=8cm]{distance_clustering.png}
+\centering
+\caption{Cytoscape plot after refinement}
+\end{figure}
 
-\section*{Differential functional enrichment}
+\subsection*{Differential functional enrichment}
 You can then calculate differential functional enrichment between conditions using \textbf{testClusters()}. Test clusters requires an additional variable \textbf{group} which identifies which condition each gene is related to. \textbf{group} is a data.frame where the first column contains all of the gene names from \textbf{differentiation} and the second column contains the group designation to be tested ("up-regulated" or "down-regulated").
 
 \begin{Schunk}
@@ -76,26 +89,30 @@ You can then calculate differential functional enrichment between conditions usi
 > k.test[k.test$prop_test_p < 0.05,]
 \end{Sinput}
 \begin{Soutput}
-  group obs.high obs.low  exp.high   exp.low odds_ratio  prop_test_p
-1     4      100      28 73.607875 54.392125  21.433103 3.663906e-06
-2     5        9      25 19.552092 14.447908  12.161681 4.878139e-04
-3    10       15       0  8.625923  6.374077   9.413425 2.154025e-03
-4    12        3      11  8.050861  5.949139   6.053671 1.387742e-02
-5    13       18       3 12.076292  8.923708   5.732353 1.665515e-02
-          padj
-1 7.327813e-05
-2 9.268463e-03
-3 3.877245e-02
-4 2.359161e-01
-5 2.664824e-01
+  group obs.high obs.low exp.high  exp.low odds_ratio  prop_test_p        padj
+1     8       30       3 18.97703 14.02297  13.731637 0.0002108723 0.002108723
+2     5       10      20 17.25185 12.74815   6.218468 0.0126424459 0.113782013
+3     2       28      35 36.22888 26.77112   3.880179 0.0488593435 0.390874748
 \end{Soutput}
 \end{Schunk}
+\begin{figure}[ht]
+\includegraphics[width=8cm]{group_clustering.png}
+\centering
+\caption{Genes grouped by clustering and colored by differential expression estimate. All clusters represent genes that are enriched for specific functional annotation. Highlighted clusters contain more genes from a given condition. For example, cluster 8 primarily contains genes that are more highly expressed in neural progenitor cells.}
+\end{figure}
 
-\section*{Examine annotation associated with each group}
+\subsection*{Examine annotation associated with each group}
 \textbf{findTerms} returns a list of GO terms shared within each gene group. Here, we've required that at least 40 percent of the genes share the annotation term.
 \begin{Schunk}
 \begin{Sinput}
-> term_genes <- unique(as.character(tab[tab$group == 10, "destination"]))
+> term_genes <- unique(as.character(tab[tab$group == 8, "destination"]))
+> head(term_genes)[1:10]
+\end{Sinput}
+\begin{Soutput}
+ [1] "CD37"   "SLC3A1" "SLA2"   "TREH"   "CIITA"  "SLC5A2" NA       NA      
+ [9] NA       NA      
+\end{Soutput}
+\begin{Sinput}
 > findTerms(M, term_genes,proportion.shared = 0.5)
 \end{Sinput}
 \begin{Soutput}
