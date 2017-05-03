@@ -21,6 +21,7 @@ findGenes <- function(M,tab, group = NULL, term = "nuclear"){
   for (g in as.character(unique(tab$origin))){
     df[df$gene == g,"group" ] <- unique(as.character(tab[tab$origin == g, "group"]))
   }
+  df <- df[order(df$group, decreasing=TRUE),]
   if (!is.null(group)){
     df <- as.character(df[df$group == group,]$gene)
   }
