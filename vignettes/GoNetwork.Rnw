@@ -89,47 +89,48 @@ k.test <- testClusters(tab,group)
 k.test[k.test$prop_test_p < 0.05,]
 @
 
+if you would like to make this group dataframe from your own data here is an example using results from the edgeR differential expression outout. Here we are labelling genes as "high" if the logFC is greater than 0 and "low" if less than 0.
+<<make group,echo=T>>=
+data(res)
+group <- data.frame(genes = differentiation,
+                    group = ifelse(res[differentiation, "logFC"] > 0, "high","low"))
+@
 
 \subsection*{Examine annotation associated with each group}
 \textbf{findTerms} returns a list of GO terms shared within each gene group. Here, we've required that at least 40 percent of the genes share the annotation term.
 <<findTerms,echo=T>>=
-term_genes <- unique(as.character(tab[as.character(tab$group) == 21, "origin"]))
+term_genes <- unique(as.character(tab[as.character(tab$group) == 4, "origin"]))
 head(term_genes)
-findTerms(M, term_genes,proportion.shared = 0.3)
-findTerms(M, term_genes,proportion.shared = 0.6)
+findTerms(M, term_genes,proportion.shared = 0.5)
+findTerms(M, term_genes,proportion.shared = 0.2)
 @
 
 \subsection*{Examine genes associated with each annotation}
 \textbf{findGenes} returns genes in your dataset exactly associated with a given functional term.
 <<findGenes,echo=T>>=
-findGenes(M,tab, group = 21, term = "postsynaptic membrane")
+findGenes(M,tab, group = 21, term = "DNA repair")
 @
 
 Alternatively, you can use \textbf{findGenes} to return genes in any GO term. Here we are looking for which genes, and associated clusters, contain genes involved in the cell cycle.
 <<findGenes,echo=T>>=
-fg <- findGenes(M,tab, term = "cell cycle")
+fg <- findGenes(M,tab, term = "postsynaptic membrane")
 head(fg)
 @
 
-We can then trace back which are the top clusters that have this term. Since cell cycle is a common term with only 5 ancestors it appears across many genes including the group 0, which are unclustered genes, as well as groups 4, and 11.
+We can then trace back which are the top clusters that have this term. The term appears across many genes including the group 0, which are unclustered genes, and is enriched in group 21 which is a cluster that is significantly associated with genes that are up-regulated in neurons.
 <<findGenes table,echo=T>>=
 fg.table <- data.frame(table(fg$group))
 fg.table <- fg.table[order(fg.table$Freq,decreasing = TRUE),]
 head(fg.table)
 @
 
-Let's take a look at what the top functional categories are in groups 4 and 11, which contain genes involved in the cell cycle
+Let's take a look at what the top functional categories are in 21, which contains postsynaptic membrane genes.
 <<findTerms2,echo=T>>=
 #Group 4
-term_genes <- unique(as.character(tab[as.character(tab$group) == 4, "origin"]))
+term_genes <- unique(as.character(tab[as.character(tab$group) == 21, "origin"]))
 head(term_genes)
 findTerms(M, term_genes,proportion.shared = 0.3)
-#Group 11
-term_genes <- unique(as.character(tab[as.character(tab$group) == 11, "origin"]))
-head(term_genes)
-findTerms(M, term_genes,proportion.shared = 0.3)
-findTerms(M, term_genes,proportion.shared = 0.6)
-@
 
-These two groups look rather similar to one another
+
+
 \end{document}
