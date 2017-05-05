@@ -21,11 +21,17 @@ Currently, standard functional analyses are restricted by the requirement of exa
 library(GONetwork)
 @
 
+\section*{Installation}
+<<Installation, echo=T>>=
+library(devtools)
+install_github("saralinker/GONetwork")
+@
 
 \section*{Run}
 GONetwork is designed to take a list of genes and calculate a similarity matrix based on functional annotation. The matrix (M) is created with with knowledge of the hierarchical representation of GO terms. Since there are many GO terms available and few GO terms relevant for each gene, M is a highly sparse matrix. A cosine function is applied to successfully work with this sparse data, however the user can input other common distance measures. We've provided a test dataset to work with generated from real data examining neural progenitor cells throughout differentiation into neurons. Gene expression was compared between neural progenitor cells and neurons. \textsl{differentiation} contains the significant genes from this analysis.
 
 <<Load Data, echo=T>>=
+library(GONetwork)
 data(differentiation)
 head(differentiation)
 @
@@ -118,12 +124,12 @@ Let's take a look at what the top functional categories are in groups 4 and 11, 
 term_genes <- unique(as.character(tab[as.character(tab$group) == 4, "origin"]))
 head(term_genes)
 findTerms(M, term_genes,proportion.shared = 0.3)
-findTerms(M, term_genes,proportion.shared = 0.6)
-
 #Group 11
 term_genes <- unique(as.character(tab[as.character(tab$group) == 11, "origin"]))
 head(term_genes)
 findTerms(M, term_genes,proportion.shared = 0.3)
 findTerms(M, term_genes,proportion.shared = 0.6)
 @
+
+These two groups look rather similar to one another
 \end{document}
