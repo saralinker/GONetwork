@@ -23,3 +23,36 @@ Currently, standard functional analyses are restricted by the requirement of exa
 \begin{Sinput}
 > library(devtools)
 > install_github("saralinker/GONetwork")
+\end{Sinput}
+\end{Schunk}
+
+\section*{Run}
+GONetwork is designed to take a list of genes and calculate a similarity matrix based on functional annotation. The matrix (M) is created with with knowledge of the hierarchical representation of GO terms. Since there are many GO terms available and few GO terms relevant for each gene, M is a highly sparse matrix. A cosine function is applied to successfully work with this sparse data, however the user can input other common distance measures. We've provided a test dataset to work with generated from real data examining neural progenitor cells throughout differentiation into neurons. Gene expression was compared between neural progenitor cells and neurons. \textsl{differentiation} contains the significant genes from this analysis.
+
+\begin{Schunk}
+\begin{Sinput}
+> library(GONetwork)
+> data(differentiation)
+> head(differentiation)
+\end{Sinput}
+\begin{Soutput}
+[1] "PRMT5-AS1"  "CERS6-AS1"  "STARD4-AS1" "GTF3C2-AS1" "C5orf66"   
+[6] "MFSD11"    
+\end{Soutput}
+\end{Schunk}
+
+\subsection*{Generate GOterm Matrix}
+Use \textbf{getGo()} to create the matrix of GO terms based on the gene list.
+\begin{Schunk}
+\begin{Sinput}
+> M <- getGo(differentiation,species = "human")
+\end{Sinput}
+\end{Schunk}
+
+
+Once the GO term matrix is created, use \textbf{GoTheDist()} to calculate the distances between genes. Here, we're using the cosine distance to calculate similarity. It is useful to restrict the analysis to highly informative GO terms. Here we've required that all of the GO terms have at least 15 ancestors. 
+\vspace{5mm}
+
+\begin{Schunk}
+\begin{Sinput}
+> D <- GoTheDist(M,method="cosine",minparents=15)
