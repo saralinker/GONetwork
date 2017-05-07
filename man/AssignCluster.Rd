@@ -4,7 +4,7 @@
 \alias{AssignCluster}
 \title{AssignCluster}
 \usage{
-AssignCluster(tab, D, K = 10, rmv_stragglers = TRUE)
+AssignCluster(tab, D, K = 10, rmv_stragglers = TRUE, cutoff = 0.3)
 }
 \arguments{
 \item{tab, }{output from cyto()}

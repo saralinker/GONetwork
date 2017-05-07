@@ -4,7 +4,7 @@
 \alias{findGenes}
 \title{Find genes associated with a given GO term}
 \usage{
-findGenes(M, term = "nuclear")
+findGenes(M, tab, group = NULL, term = "nuclear")
 }
 \arguments{
 \item{M}{Matrix of GO terms for each gene}
