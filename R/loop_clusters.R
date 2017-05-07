@@ -26,12 +26,12 @@ loop_clusters <- function(CLUSTER, prop = 0.1,M = M, TAB  = tab, return.max = 5)
   }
   #find genes associated with each term 
   if(length(ft) > 0){
-    term_genes <- data.frame(do.call("rbind", lapply(X = ft, FUN = test_global_cluster_proportion, cluster = CLUSTER, M = M, tab  = TAB)))
+    term_genes <- data.frame(do.call("rbind", lapply(X = ft, FUN = test_global_cluster_proportion, cluster = CLUSTER, M = M, tab  = TAB,cl.genes = c.genes)))
     dimnames(term_genes) <- list(ft, c("in.group.n","in.group.x","out.group.x","p","ancestor" ))
     term_genes <- na.exclude(term_genes)
     term_genes$padj <- p.adjust(term_genes$p)
     term_genes <- term_genes[term_genes$padj < 0.05,]
-    term_genes <- term_genes[order(term_genes$p,decreasing = TRUE),]
+    term_genes <- term_genes[order(term_genes$p),]
   }else{
     term_genes <- NA
   }
