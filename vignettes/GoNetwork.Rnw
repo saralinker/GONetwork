@@ -47,7 +47,7 @@ Once the GO term matrix is created, use \textbf{GoTheDist()} to calculate the di
 \vspace{5mm}
 
 <<GoTheDist, echo=T>>=
-D <- GoTheDist(M,method="cosine",minparents=15)
+D <- GoTheDist(M,minparents = 15)
 @
 
 \subsection*{Plot the full network}
@@ -74,14 +74,23 @@ tab <-AssignCluster(tab = tab, D = D, K = 30, rmv_stragglers = TRUE)
 \caption{Cytoscape plot after refinement}
 \end{figure}
 
-\subsection*{Differential functional enrichment}
-You can then calculate differential functional enrichment between conditions using \textbf{testClusters()}. Test clusters requires an additional variable \textbf{group} which identifies which condition each gene is related to. \textbf{group} is a data.frame where the first column contains all of the gene names from \textbf{differentiation} and the second column contains the group designation to be tested ("up-regulated" or "down-regulated").
-
+\subsection*{Highly descriptive terms}
+\textbf{topTerm()} will identify highly specific terms that are significantly enriched in each cluster. 
+\vspace{5mm}
+<<topTerm,echo=T>>=
+topterm <- topTerm(tab, M,ret.max = 5)
+sig.clusters <- topterm@sig.clusters
+terms.in.clusters <- topterm@terms.in.matrix
+terms.in.clusters[["6"]]
+@
 \begin{figure}[ht]
 \includegraphics[width=12cm]{group_clustering_v2.png}
 \centering
 \caption{Genes grouped by clustering and colored by differential expression estimate. All clusters represent genes that are enriched for specific functional annotation. Note the interconnectedness wihtin a group as well as between groups. The between groups represents gene clusters with similar annotation. Highlighted clusters contain more genes from a given condition. For example, cluster 22 primarily contains genes that are more highly expressed in neurons. Below we will examine what genes and terms are present within these clusters. }
 \end{figure}
+
+\subsection*{Differential functional enrichment}
+You can then calculate differential functional enrichment between conditions using \textbf{testClusters()}. Test clusters requires an additional variable \textbf{group} which identifies which condition each gene is related to. \textbf{group} is a data.frame where the first column contains all of the gene names from \textbf{differentiation} and the second column contains the group designation to be tested ("up-regulated" or "down-regulated").
 
 <<testClusters,echo=T>>=
 data(group)
@@ -96,12 +105,18 @@ group <- data.frame(genes = differentiation,
                     group = ifelse(res[differentiation, "logFC"] > 0, "high","low"))
 @
 
+
+Cluster number 21 is significantly different between conditions. Let's see what the top terms are in that group
+<<sigterms,echo=T>>=
+terms.in.clusters[["21"]]
+@
+
+
 \subsection*{Examine annotation associated with each group}
-\textbf{findTerms} returns a list of GO terms shared within each gene group. Here, we've required that at least 40 percent of the genes share the annotation term.
+Alternatively we can use \textbf{findTerms} to find all of the GO terms shared within this cluster. Here, we've required that at least 20 percent of the genes share the annotation term.
 <<findTerms,echo=T>>=
-term_genes <- unique(as.character(tab[as.character(tab$group) == 4, "origin"]))
+term_genes <- genes_in_cluster(cluster = 4, tab)
 head(term_genes)
-findTerms(M, term_genes,proportion.shared = 0.5)
 findTerms(M, term_genes,proportion.shared = 0.2)
 @
 
@@ -123,14 +138,6 @@ fg.table <- data.frame(table(fg$group))
 fg.table <- fg.table[order(fg.table$Freq,decreasing = TRUE),]
 head(fg.table)
 @
-
-Let's take a look at what the top functional categories are in 21, which contains postsynaptic membrane genes.
-<<findTerms2,echo=T>>=
-#Group 4
-term_genes <- unique(as.character(tab[as.character(tab$group) == 21, "origin"]))
-head(term_genes)
-findTerms(M, term_genes,proportion.shared = 0.3)
-
 
 
 \end{document}

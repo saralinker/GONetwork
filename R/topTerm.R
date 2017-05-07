@@ -12,12 +12,12 @@
 
 setClass("TermList",slots = c(sig.clusters = "data.frame", terms.in.matrix = "list") )
 
-topTerm <- function(tab,M,  return.max = 5){
+topTerm <- function(tab,M,  ret.max = 5){
   if(sum(colnames(tab) == "group") == 0){
     warning("Need to assign clusters with AssignCluster() before determining the top term per cluster.")
     stop()
   }
-  topterms <- lapply(X = unique(tab$group),FUN = loop_clusters, M = M, TAB = tab,  return.max)
+  topterms <- lapply(X = unique(tab$group),FUN = loop_clusters, M = M, TAB = tab,  return.max = ret.max)
   names(topterms) <- unique(tab$group)
   sig <- unlist(lapply(names(topterms), FUN = function(x){nrow(topterms[[x]])}))
   sig <- data.frame(cluster = names(topterms[sig > 0]), term_count = sig[sig > 0])
